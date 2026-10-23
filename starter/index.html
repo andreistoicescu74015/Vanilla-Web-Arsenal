@@ -1,0 +1,111 @@
+<!doctype html>
+<!-- The fastest rebrand: add a preset, for example <html lang="en" data-preset="forest">.
+     Presets: indigo, forest, editorial, candy. Without one you get the default teal theme. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Change these three: they show up in the browser tab and in link previews -->
+  <title>Project name | One line about it</title>
+  <meta name="description" content="One sentence that says what the project does and for whom.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+
+  <!-- Applies the saved light/dark theme before the page draws, so it does not flash -->
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+
+  <!-- The arsenal first, then your own CSS, which always wins over it -->
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- defer: scripts run after the HTML is parsed, in this order. Remove the ones you do not use. -->
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/router.js"></script>
+  <script defer src="../arsenal/js/http.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/sample-data.js"></script>
+  <script defer src="../arsenal/js/mock-api.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="js/main.js"></script>
+</head>
+<body class="page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="navbar-brand" href="#"><i data-icon="zap" class="text-brand"></i> Project</a>
+      <nav class="navbar-links" id="main-nav" aria-label="Main">
+        <a href="#" aria-current="page">Home</a>
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="main-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero bg-aurora">
+      <div class="container stack items-center gap-l">
+        <span class="eyebrow animate-fade-down"><i data-icon="sparkles"></i> Hackathon 2026</span>
+        <h1 class="max-w-l animate-fade-up">Say what the project does <span class="gradient-text">in one line</span></h1>
+        <p class="lead animate-fade-up" style="--delay: 100ms">Who it is for and which problem it solves, in one or two sentences.</p>
+        <div class="cluster animate-fade-up" style="--delay: 200ms; --justify: center">
+          <a class="btn btn-gradient btn-lg" href="#features">Try it <i data-icon="arrow-right"></i></a>
+          <a class="btn btn-outline btn-lg" href="#about">How it works</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Three things it does well</h2>
+        </div>
+        <div class="auto-grid" data-reveal-group>
+          <article class="card" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="zap"></i></div>
+              <h3 class="text-lg">First feature</h3>
+              <p class="text-muted">Describe the benefit to the user, not the technology.</p>
+            </div>
+          </article>
+          <article class="card" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="shield"></i></div>
+              <h3 class="text-lg">Second feature</h3>
+              <p class="text-muted">One or two short sentences per card.</p>
+            </div>
+          </article>
+          <article class="card" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="users"></i></div>
+              <h3 class="text-lg">Third feature</h3>
+              <p class="text-muted">Keep the three cards about the same length.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-surface" id="about">
+      <div class="container stack gap-l">
+        <h2>Your app goes here</h2>
+        <p class="text-muted max-w-prose">js/main.js renders a small list into the box below. Replace it with your own feature.</p>
+        <div id="app"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container split">
+      <p>&copy; 2026 Team name</p>
+      <p>Built with HTML, CSS and JavaScript.</p>
+    </div>
+  </footer>
+</body>
+</html>

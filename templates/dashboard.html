@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard | Nimbus</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <style>
+    /* Page-specific styles. In @layer components so utility classes still override them. */
+    @layer components {
+      /* The sidebar stays in view while the main column scrolls */
+      .app-sidebar {
+        position: sticky;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-l);
+        block-size: 100dvh;
+        overflow-y: auto;
+        padding: var(--space-l) var(--space-m);
+        border-inline-end: 1px solid var(--border);
+        background-color: var(--surface);
+      }
+
+      .app-header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-s);
+        padding: var(--space-s) var(--space-xl);
+        border-block-end: 1px solid var(--border);
+      }
+
+      .app-main {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xl);
+        padding: var(--space-xl);
+      }
+
+      /* Card title rows share one height, so titles line up across a row of cards
+         whether or not they have a control next to them */
+      .card-heading {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-s);
+        min-block-size: 2.625rem;
+      }
+
+      .activity li {
+        display: flex;
+        gap: var(--space-s);
+        padding-block: var(--space-s);
+        border-block-end: 1px solid var(--border);
+      }
+
+      .activity li:last-child {
+        border-block-end: 0;
+      }
+
+      /* Loading placeholder shaped like the table rows it stands in for */
+      .skeleton-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-l);
+        padding: var(--space-s) var(--space-m);
+        border-block-end: 1px solid var(--border);
+      }
+
+      /* On phones the sidebar is replaced by the menu button and drawer in the header */
+      @media (width < 48rem) {
+        .app-sidebar {
+          display: none;
+        }
+
+        .app-header,
+        .app-main {
+          padding-inline: var(--space-m);
+        }
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/sample-data.js"></script>
+  <script defer src="../arsenal/js/mock-api.js"></script>
+  <script defer src="../arsenal/js/charts.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="dashboard.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="app-shell">
+    <aside class="app-sidebar" aria-label="Sidebar">
+      <a class="navbar-brand" href="landing.html"><i data-icon="cloud" class="text-brand"></i> Nimbus</a>
+      <nav class="sidenav" aria-label="Main">
+        <p class="sidenav-title">Workspace</p>
+        <a href="#" aria-current="page"><i data-icon="home"></i> Overview</a>
+        <a href="#"><i data-icon="layers"></i> Boards</a>
+        <a href="#"><i data-icon="calendar"></i> Calendar</a>
+        <a href="#"><i data-icon="message-circle"></i> Messages <span class="badge badge-primary push-right">3</span></a>
+        <p class="sidenav-title">Team</p>
+        <a href="#"><i data-icon="users"></i> Members</a>
+        <a href="#"><i data-icon="bar-chart"></i> Reports</a>
+        <a href="#"><i data-icon="settings"></i> Settings</a>
+      </nav>
+      <div class="card user-card push-down">
+        <div class="card-body flex-row items-center p-s">
+          <span class="avatar">AP</span>
+          <div class="min-w-0">
+            <p class="font-semibold truncate">Ana Popescu</p>
+            <p class="text-sm text-muted truncate">ana.popescu@example.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <header class="app-header">
+      <form class="input-group max-w-m grow min-w-0" role="search" onsubmit="event.preventDefault()">
+        <label class="visually-hidden" for="search">Search tasks</label>
+        <input class="input" id="search" type="search" placeholder="Search tasks">
+        <button class="btn btn-outline" type="submit" aria-label="Search"><i data-icon="search"></i></button>
+      </form>
+      <div class="cluster flex-nowrap push-right" style="--gap: var(--space-2xs)">
+        <button class="btn btn-ghost btn-icon hide-mobile" type="button" data-tooltip="Notifications" aria-label="Notifications"><i data-icon="bell"></i></button>
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <details class="dropdown" data-dropdown>
+          <summary class="btn btn-ghost btn-icon" aria-label="Account menu"><span class="avatar" style="--size: 2rem">AP</span></summary>
+          <div class="dropdown-menu align-end">
+            <a href="#"><i data-icon="user"></i> Profile</a>
+            <a href="#"><i data-icon="settings"></i> Settings</a>
+            <hr>
+            <a href="auth.html"><i data-icon="log-out"></i> Sign out</a>
+          </div>
+        </details>
+        <button class="btn btn-ghost btn-icon hide-desktop" type="button" data-dialog-open="mobile-nav" aria-label="Open menu"><i data-icon="menu"></i></button>
+      </div>
+    </header>
+
+    <main class="app-main" id="main">
+      <div class="split">
+        <div class="stack" style="--gap: var(--space-2xs)">
+          <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <ol>
+              <li><a href="#">Workspace</a></li>
+              <li><span aria-current="page">Overview</span></li>
+            </ol>
+          </nav>
+          <h1 class="text-3xl">Good morning, Ana</h1>
+        </div>
+        <div class="cluster">
+          <button class="btn btn-outline" type="button" onclick="VWA.toast('Report exported', { type: 'success' })"><i data-icon="download"></i> Export</button>
+          <button class="btn btn-primary" type="button" data-dialog-open="new-task"><i data-icon="plus"></i> New task</button>
+        </div>
+      </div>
+
+      <section class="auto-grid" style="--min: 10rem; --gap: var(--space-m)" aria-label="Key numbers">
+        <div class="card"><div class="card-body stat">
+          <span class="stat-label flex items-center gap-xs"><i data-icon="check-circle"></i> Tasks done</span>
+          <span class="stat-value" data-count-to="128">128</span>
+          <span class="stat-trend trend-up">+18% vs last week</span>
+        </div></div>
+        <div class="card"><div class="card-body stat">
+          <span class="stat-label flex items-center gap-xs"><i data-icon="clock"></i> Hours logged</span>
+          <span class="stat-value" data-count-to="342.5">342.5</span>
+          <span class="stat-trend trend-up">+6% vs last week</span>
+        </div></div>
+        <div class="card"><div class="card-body stat">
+          <span class="stat-label flex items-center gap-xs"><i data-icon="users"></i> Active members</span>
+          <span class="stat-value" data-count-to="12">12</span>
+          <span class="stat-trend text-muted">No change</span>
+        </div></div>
+        <div class="card"><div class="card-body stat">
+          <span class="stat-label flex items-center gap-xs"><i data-icon="alert-triangle"></i> Overdue</span>
+          <span class="stat-value" data-count-to="3">3</span>
+          <span class="stat-trend trend-down">+2 vs last week</span>
+        </div></div>
+      </section>
+
+      <div class="cols-3">
+        <section class="card span-2" aria-labelledby="chart-title">
+          <div class="card-body" style="--gap: var(--space-m)">
+            <div class="card-heading">
+              <h2 class="text-lg" id="chart-title">Tasks completed</h2>
+              <fieldset class="segmented">
+                <legend class="visually-hidden">Chart period</legend>
+                <label><input type="radio" name="period" value="week" checked> Week</label>
+                <label><input type="radio" name="period" value="month"> Month</label>
+              </fieldset>
+            </div>
+            <div id="chart"></div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="status-title">
+          <div class="card-body" style="--gap: var(--space-m)">
+            <div class="card-heading"><h2 class="text-lg" id="status-title">Task status</h2></div>
+            <div id="status-chart">
+              <div class="skeleton" style="height: 11rem" aria-hidden="true"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="cols-3">
+        <section class="card span-2" aria-labelledby="tasks-title">
+          <div class="card-body">
+            <div class="card-heading">
+              <h2 class="text-lg" id="tasks-title">Team tasks</h2>
+              <fieldset class="segmented">
+                <legend class="visually-hidden">Show tasks</legend>
+                <label><input type="radio" name="filter" value="all" checked> All</label>
+                <label><input type="radio" name="filter" value="open"> Open</label>
+                <label><input type="radio" name="filter" value="done"> Done</label>
+              </fieldset>
+            </div>
+            <!-- A short summary is announced here instead of the whole table -->
+            <p class="visually-hidden" role="status" id="tasks-status"></p>
+            <div id="tasks" aria-busy="true"></div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="activity-title">
+          <div class="card-body">
+            <div class="card-heading"><h2 class="text-lg" id="activity-title">Recent activity</h2></div>
+            <ul role="list" class="activity text-sm">
+              <li><span class="avatar" style="--size: 2rem">MI</span><span><strong>Mihai</strong> moved <em>Connect the API</em> to In progress<span class="block text-muted">12 minutes ago</span></span></li>
+              <li><span class="avatar" style="--size: 2rem">ED</span><span><strong>Elena</strong> commented on <em>Pitch deck</em><span class="block text-muted">1 hour ago</span></span></li>
+              <li><span class="avatar" style="--size: 2rem">AS</span><span><strong>Andrei</strong> finished <em>Database schema</em><span class="block text-muted">3 hours ago</span></span></li>
+              <li><span class="avatar" style="--size: 2rem">IM</span><span><strong>Ioana</strong> uploaded 4 files<span class="block text-muted">Yesterday</span></span></li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Navigation for phones: the same links as the sidebar, in a drawer -->
+  <dialog class="modal drawer" id="mobile-nav" aria-labelledby="mobile-nav-title">
+    <div class="modal-header">
+      <span class="navbar-brand" id="mobile-nav-title"><i data-icon="cloud" class="text-brand"></i> Nimbus</span>
+      <button class="btn btn-ghost btn-icon btn-sm" type="button" data-dialog-close aria-label="Close menu"><i data-icon="x"></i></button>
+    </div>
+    <div class="modal-body">
+      <nav class="sidenav" aria-label="Main">
+        <p class="sidenav-title">Workspace</p>
+        <a href="#" aria-current="page"><i data-icon="home"></i> Overview</a>
+        <a href="#"><i data-icon="layers"></i> Boards</a>
+        <a href="#"><i data-icon="calendar"></i> Calendar</a>
+        <a href="#"><i data-icon="message-circle"></i> Messages <span class="badge badge-primary push-right">3</span></a>
+        <p class="sidenav-title">Team</p>
+        <a href="#"><i data-icon="users"></i> Members</a>
+        <a href="#"><i data-icon="bar-chart"></i> Reports</a>
+        <a href="#"><i data-icon="settings"></i> Settings</a>
+        <a href="#"><i data-icon="bell"></i> Notifications</a>
+      </nav>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="new-task" aria-labelledby="new-task-title">
+    <form id="new-task-form" data-validate>
+      <div class="modal-header">
+        <h2 class="text-xl" id="new-task-title">New task</h2>
+        <button class="btn btn-ghost btn-icon btn-sm" type="button" data-dialog-close aria-label="Close"><i data-icon="x"></i></button>
+      </div>
+      <div class="modal-body stack">
+        <div class="field">
+          <label class="label" for="task-title">Title</label>
+          <input class="input" id="task-title" name="title" required minlength="3" autofocus>
+        </div>
+        <div class="cols-2" style="--gap: var(--space-m)">
+          <div class="field">
+            <label class="label" for="task-priority">Priority</label>
+            <select class="input" id="task-priority" name="priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label" for="task-due">Due date</label>
+            <input class="input" id="task-due" name="due" type="date" required>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" type="button" data-dialog-close>Cancel</button>
+        <button class="btn btn-primary" type="submit">Create task</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

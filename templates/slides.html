@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nimbus pitch | Spring Build Weekend</title>
+  <meta name="description" content="The final pitch for Nimbus: project boards for student teams.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <style>
+    @layer components {
+      /*
+        Every slide is designed at 1280 x 720 pixels and scaled to fit the window
+        (slides.js sets --scale), so the layout looks the same on a laptop and a projector.
+      */
+      .deck {
+        overflow: hidden;
+        background-color: var(--surface);
+      }
+
+      .deck-stage {
+        position: fixed;
+        inset: 0 0 4.5rem;
+        display: grid;
+        place-items: center;
+      }
+
+      /* Centered on the stage with left/top 50% and translate -50%: margin: auto would not
+         center a box that is wider than the window */
+      .slide {
+        position: absolute;
+        inset-block-start: 50%;
+        inset-inline-start: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 32px;
+        inline-size: 1280px;
+        block-size: 720px;
+        padding: 72px 96px;
+        border-radius: 12px;
+        background-color: var(--bg);
+        box-shadow: var(--shadow-l);
+        font-size: 28px;
+        line-height: 1.4;
+        scale: var(--scale, 1);
+        opacity: 0;
+        visibility: hidden;
+        translate: -50% -50%;
+        transition:
+          opacity var(--duration-slow) var(--ease-out),
+          visibility var(--duration-slow);
+      }
+
+      .slide.is-active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .slide h1 {
+        font-size: 104px;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+
+      .slide h2 {
+        font-size: 60px;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+
+      .slide h3 {
+        font-size: 30px;
+      }
+
+      .slide .kicker {
+        color: var(--link);
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .slide .muted {
+        color: var(--text-muted);
+      }
+
+      /* Fixed columns: the slide is always 1280px wide, so the arsenal's responsive
+         .cols-* classes (which react to the window size) are not used inside slides */
+      .slide-row {
+        display: grid;
+        grid-template-columns: repeat(var(--columns, 3), minmax(0, 1fr));
+        gap: 48px;
+      }
+
+      .slide .big-number {
+        font-family: var(--font-heading);
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      /* Chart labels big enough to read from the back of the room */
+      .slide .chart :is(.chart-label, .chart-axis, .chart-value) {
+        font-size: 18px;
+      }
+
+      .slide.bg-primary .kicker {
+        color: inherit;
+      }
+
+      .deck-progress {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: var(--z-sticky);
+        block-size: 4px;
+        background-color: var(--surface-2);
+      }
+
+      .deck-progress > span {
+        display: block;
+        inline-size: var(--value, 0%);
+        block-size: 100%;
+        background-color: var(--primary);
+        transition: inline-size var(--duration-slow) var(--ease-out);
+      }
+
+      .deck-controls {
+        position: fixed;
+        inset-block-end: var(--space-s);
+        inset-inline-start: 50%;
+        translate: -50% 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2xs);
+        padding: var(--space-2xs) var(--space-xs);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        background-color: var(--bg);
+        box-shadow: var(--shadow-m);
+      }
+
+      .deck-counter {
+        min-inline-size: 5ch;
+        text-align: center;
+        font-size: var(--text-sm);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* One slide per printed page: Ctrl+P gives a PDF of the deck */
+      @media print {
+        @page {
+          size: 1280px 720px;
+          margin: 0;
+        }
+
+        .deck {
+          overflow: visible;
+          background: none;
+        }
+
+        .deck-controls,
+        .deck-progress,
+        .skip-link {
+          display: none;
+        }
+
+        .deck-stage {
+          position: static;
+          display: block;
+        }
+
+        .slide {
+          position: relative;
+          inset: auto;
+          scale: none;
+          translate: none;
+          opacity: 1;
+          visibility: visible;
+          border-radius: 0;
+          box-shadow: none;
+          break-after: page;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/charts.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="slides.js"></script>
+</head>
+<body class="deck">
+  <a class="skip-link" href="#main">Skip to the slides</a>
+  <div class="deck-progress" aria-hidden="true"><span></span></div>
+
+  <main class="deck-stage" id="main" aria-roledescription="slide deck" aria-label="Nimbus pitch">
+
+    <section class="slide bg-primary" aria-roledescription="slide" aria-label="Title">
+      <p class="kicker">Spring Build Weekend 2026, team Pixel Pushers</p>
+      <h1>Nimbus</h1>
+      <p style="font-size: 40px; max-inline-size: 22ch">Project boards for student teams, so the work stops getting lost in the group chat.</p>
+    </section>
+
+    <section class="slide" aria-roledescription="slide" aria-label="Problem">
+      <p class="kicker">The problem</p>
+      <h2>Student projects fall apart in the group chat</h2>
+      <div class="slide-row">
+        <div class="stack" style="--gap: 8px"><span class="big-number">6</span><span class="muted">apps a typical team uses to plan one project</span></div>
+        <div class="stack" style="--gap: 8px"><span class="big-number">41%</span><span class="muted">of students missed a deadline they did not know about</span></div>
+        <div class="stack" style="--gap: 8px"><span class="big-number">3 h</span><span class="muted">a week spent looking for files and messages</span></div>
+      </div>
+      <p class="muted" style="font-size: 20px">From our survey of 48 students at our faculty, April 2026.</p>
+    </section>
+
+    <section class="slide" aria-roledescription="slide" aria-label="Solution">
+      <p class="kicker">The solution</p>
+      <h2>One board for tasks, files and deadlines</h2>
+      <div class="slide-row">
+        <div class="stack" style="--gap: 16px"><div class="icon-box" style="--icon-size: 32px; inline-size: 64px; block-size: 64px"><i data-icon="layers"></i></div><h3>Boards</h3><p class="muted">Who does what, visible at a glance.</p></div>
+        <div class="stack" style="--gap: 16px"><div class="icon-box" style="--icon-size: 32px; inline-size: 64px; block-size: 64px"><i data-icon="calendar"></i></div><h3>Deadlines</h3><p class="muted">Every due date in one calendar.</p></div>
+        <div class="stack" style="--gap: 16px"><div class="icon-box" style="--icon-size: 32px; inline-size: 64px; block-size: 64px"><i data-icon="folder"></i></div><h3>Files in place</h3><p class="muted">Attached to the task they belong to.</p></div>
+      </div>
+    </section>
+
+    <section class="slide" aria-roledescription="slide" aria-label="Demo">
+      <p class="kicker">Demo</p>
+      <div class="mock-window" aria-hidden="true">
+        <div class="mock-window-bar"><span></span><span></span><span></span></div>
+        <div class="mock-window-body">
+          <div class="slide-row" style="gap: 20px; font-size: 18px">
+            <div class="stack" style="--gap: 12px">
+              <div class="split"><strong>To do</strong><span class="badge">3</span></div>
+              <div class="card"><div class="card-body" style="--gap: 8px"><span class="font-semibold">Interview 5 students</span><span class="badge badge-info">Research</span></div></div>
+              <div class="card"><div class="card-body" style="--gap: 8px"><span class="font-semibold">Pick a color palette</span><span class="badge badge-primary">Design</span></div></div>
+            </div>
+            <div class="stack" style="--gap: 12px">
+              <div class="split"><strong>In progress</strong><span class="badge">2</span></div>
+              <div class="card card-featured"><div class="card-body" style="--gap: 8px"><span class="font-semibold">Build the landing page</span><div class="progress" style="--value: 70%"><span></span></div></div></div>
+              <div class="card"><div class="card-body" style="--gap: 8px"><span class="font-semibold">Connect the API</span><span class="badge badge-warning">Blocked</span></div></div>
+            </div>
+            <div class="stack" style="--gap: 12px">
+              <div class="split"><strong>Done</strong><span class="badge">8</span></div>
+              <div class="card"><div class="card-body" style="--gap: 8px"><span class="font-semibold muted">Set up the repo</span><span class="badge badge-success">Done</span></div></div>
+              <div class="card"><div class="card-body" style="--gap: 8px"><span class="font-semibold muted">Choose a name</span><span class="badge badge-success">Done</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="font-size: 22px">Live at nimbus.example.com. Ask us to try it after the pitch.</p>
+    </section>
+
+    <section class="slide" aria-roledescription="slide" aria-label="How it works">
+      <p class="kicker">How it works</p>
+      <h2>From idea to demo in three steps</h2>
+      <ol role="list" class="slide-row">
+        <li class="stack" style="--gap: 16px"><span class="step-number" style="--size: 64px; font-size: 28px">1</span><h3>Create a board</h3><p class="muted">Start from a hackathon template.</p></li>
+        <li class="stack" style="--gap: 16px"><span class="step-number" style="--size: 64px; font-size: 28px">2</span><h3>Invite the team</h3><p class="muted">One link, no setup.</p></li>
+        <li class="stack" style="--gap: 16px"><span class="step-number" style="--size: 64px; font-size: 28px">3</span><h3>Ship and present</h3><p class="muted">Export the progress report.</p></li>
+      </ol>
+    </section>
+
+    <section class="slide" aria-roledescription="slide" aria-label="Traction">
+      <p class="kicker">Traction</p>
+      <h2>40 teams in the first five weeks</h2>
+      <div class="flex gap-2xl items-end">
+        <div class="grow" id="traction-chart"></div>
+        <div class="stack" style="--gap: 24px; min-inline-size: 260px">
+          <div class="stack" style="--gap: 4px"><span class="big-number">40</span><span class="muted">teams in the pilot</span></div>
+          <div class="stack" style="--gap: 4px"><span class="big-number">92%</span><span class="muted">still active after a month</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" aria-roledescription="slide" aria-label="Team">
+      <p class="kicker">Team</p>
+      <h2>Four students, one weekend</h2>
+      <ul role="list" class="slide-row" style="--columns: 4; gap: 32px">
+        <li class="stack items-center text-center" style="--gap: 12px"><span class="avatar" style="--size: 120px">AP</span><strong>Ana Popescu</strong><span class="muted" style="font-size: 22px">Design</span></li>
+        <li class="stack items-center text-center" style="--gap: 12px"><span class="avatar" style="--size: 120px">MI</span><strong>Mihai Ionescu</strong><span class="muted" style="font-size: 22px">Frontend</span></li>
+        <li class="stack items-center text-center" style="--gap: 12px"><span class="avatar" style="--size: 120px">AS</span><strong>Andrei Stan</strong><span class="muted" style="font-size: 22px">Backend</span></li>
+        <li class="stack items-center text-center" style="--gap: 12px"><span class="avatar" style="--size: 120px">IM</span><strong>Ioana Marin</strong><span class="muted" style="font-size: 22px">Data and pitch</span></li>
+      </ul>
+    </section>
+
+    <section class="slide" aria-roledescription="slide" aria-label="Thank you">
+      <p class="kicker">What we need</p>
+      <h2>Three pilot universities and your feedback</h2>
+      <ul class="stack muted" style="--gap: 12px; font-size: 30px">
+        <li>A faculty that runs team projects this autumn</li>
+        <li>Mentors who will tell us what is missing</li>
+      </ul>
+      <p style="font-size: 44px; font-family: var(--font-heading); font-weight: 700">Thank you. <span class="text-brand">hello@nimbus.example.com</span></p>
+    </section>
+  </main>
+
+  <nav class="deck-controls" aria-label="Slide controls">
+    <button class="btn btn-ghost btn-icon btn-sm" type="button" data-action="previous" aria-label="Previous slide"><i data-icon="arrow-left"></i></button>
+    <span class="deck-counter" id="counter" aria-live="polite"></span>
+    <button class="btn btn-ghost btn-icon btn-sm" type="button" data-action="next" aria-label="Next slide"><i data-icon="arrow-right"></i></button>
+    <button class="btn btn-ghost btn-icon btn-sm" type="button" data-action="fullscreen" aria-label="Full screen" aria-pressed="false"><i data-icon="maximize"></i></button>
+    <button class="btn btn-ghost btn-icon btn-sm" type="button" data-theme-toggle></button>
+  </nav>
+</body>
+</html>

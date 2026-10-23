@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register your team | Spring Build Weekend</title>
+  <meta name="description" content="Register your team for Spring Build Weekend 2026 in four short steps.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <style>
+    @layer components {
+      .member {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+        align-items: end;
+        gap: var(--space-s);
+        padding: var(--space-m);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-m);
+      }
+
+      /* The "Member 2" title spans the whole row above the two fields */
+      .member > p {
+        grid-column: 1 / -1;
+      }
+
+      @media (width < 40rem) {
+        .member {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      .logo-preview {
+        display: flex;
+        align-items: center;
+        gap: var(--space-m);
+        padding: var(--space-s);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-m);
+      }
+
+      .logo-preview img {
+        inline-size: 4rem;
+        block-size: 4rem;
+        border-radius: var(--radius-m);
+        object-fit: cover;
+        background-color: var(--surface-2);
+      }
+
+      .summary {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 1fr);
+        gap: var(--space-xs) var(--space-l);
+        margin: 0;
+      }
+
+      .summary dt {
+        color: var(--text-muted);
+      }
+
+      .summary dd {
+        margin: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .review-block {
+        padding-block-end: var(--space-l);
+        border-block-end: 1px solid var(--border);
+      }
+
+      /* Headings receive focus after each step; the outline would only distract */
+      [tabindex="-1"]:focus {
+        outline: none;
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="wizard.js"></script>
+</head>
+<body class="page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container container-narrow navbar-inner">
+      <a class="navbar-brand" href="#"><i data-icon="zap" class="text-brand"></i> Spring Build Weekend</a>
+      <div class="navbar-actions">
+        <a class="btn btn-ghost btn-icon" href="mailto:help@example.com" aria-label="Email the organizers for help" data-tooltip="Need help?"><i data-icon="mail"></i></a>
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container container-narrow py-2xl" id="main">
+    <div class="stack" style="--gap: var(--space-xl)">
+      <header class="split items-start">
+        <div class="stack" style="--gap: var(--space-xs); flex: 1 1 20rem">
+          <h1 class="text-3xl">Register your team</h1>
+          <p class="text-muted">Four short steps. Your answers stay in this browser until you submit, so you can stop and come back.</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" type="button" data-action="start-over"><i data-icon="refresh"></i> Start over</button>
+      </header>
+
+      <div class="stack" style="--gap: var(--space-s)" id="progress-area">
+        <ol class="stepper" aria-label="Registration steps">
+          <li data-step-marker="1"><span class="step-number">1</span><span class="step-label">Team</span></li>
+          <li data-step-marker="2"><span class="step-number">2</span><span class="step-label">Members</span></li>
+          <li data-step-marker="3"><span class="step-number">3</span><span class="step-label">Project</span></li>
+          <li data-step-marker="4"><span class="step-number">4</span><span class="step-label">Review</span></li>
+        </ol>
+        <div class="progress" role="progressbar" id="progress" aria-label="Registration progress" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+      </div>
+
+      <form class="card" id="wizard" data-validate>
+        <div class="card-body" style="--gap: var(--space-l)">
+
+          <!-- Step 1 -->
+          <section class="stack" data-step="1" aria-labelledby="step-1-title">
+            <h2 class="text-xl" id="step-1-title" tabindex="-1">Step 1 of 4: your team</h2>
+            <div class="field">
+              <label class="label" for="team-name">Team name</label>
+              <input class="input" id="team-name" name="teamName" required minlength="2" maxlength="40" autocomplete="off">
+              <p class="field-hint">Shown on the leaderboard and on your certificate.</p>
+            </div>
+            <div class="field">
+              <label class="label" for="track">Track</label>
+              <select class="input" id="track" name="track" required>
+                <option value="">Choose a track</option>
+                <option>Education</option>
+                <option>Health</option>
+                <option>Climate</option>
+                <option>Open innovation</option>
+              </select>
+            </div>
+            <fieldset class="field">
+              <legend class="label">Team experience</legend>
+              <div class="cluster">
+                <label class="check"><input type="radio" name="experience" value="First hackathon" required> First hackathon</label>
+                <label class="check"><input type="radio" name="experience" value="Mixed"> Mixed</label>
+                <label class="check"><input type="radio" name="experience" value="Experienced"> Experienced</label>
+              </div>
+            </fieldset>
+          </section>
+
+          <!-- Step 2 -->
+          <section class="stack" data-step="2" aria-labelledby="step-2-title" hidden>
+            <div class="stack" style="--gap: var(--space-2xs)">
+              <h2 class="text-xl" id="step-2-title" tabindex="-1">Step 2 of 4: members</h2>
+              <p class="text-sm text-muted">Two to five people. Everyone gets the schedule and the Wi-Fi password by email.</p>
+            </div>
+            <div class="stack" style="--gap: var(--space-s)" id="members"></div>
+            <button class="btn btn-outline" type="button" data-action="add-member"><i data-icon="plus"></i> Add a member</button>
+          </section>
+
+          <!-- Step 3 -->
+          <section class="stack" data-step="3" aria-labelledby="step-3-title" hidden>
+            <h2 class="text-xl" id="step-3-title" tabindex="-1">Step 3 of 4: your project</h2>
+            <div class="field">
+              <label class="label" for="project-name">Project name (optional)</label>
+              <input class="input" id="project-name" name="projectName" maxlength="40" autocomplete="off">
+            </div>
+            <div class="field">
+              <label class="label" for="idea">Your idea</label>
+              <p class="field-hint" id="idea-hint">Who it helps and how, in two or three sentences.</p>
+              <textarea class="input" id="idea" name="idea" required minlength="30" maxlength="280" aria-describedby="idea-hint idea-count"></textarea>
+              <p class="field-hint" id="idea-count">0 of 280 characters, at least 30</p>
+            </div>
+            <div class="field">
+              <span class="label" id="logo-label">Team logo (optional)</span>
+              <label class="dropzone" id="dropzone">
+                <input type="file" id="logo" accept="image/*" aria-labelledby="logo-label logo-help">
+                <i data-icon="upload"></i>
+                <span><strong>Drop an image here</strong> or click to choose one</span>
+                <span class="text-sm" id="logo-help">PNG, JPG or SVG, up to 2 MB</span>
+              </label>
+              <div class="logo-preview" id="logo-preview" hidden>
+                <img id="logo-image" alt="Your team logo">
+                <div class="stack grow min-w-0" style="--gap: 0">
+                  <span class="font-semibold truncate" id="logo-name"></span>
+                  <span class="text-sm text-muted" id="logo-size"></span>
+                </div>
+                <button class="btn btn-ghost btn-sm" type="button" data-action="remove-logo">Remove</button>
+              </div>
+              <p class="field-error" id="logo-error"></p>
+            </div>
+            <div class="field">
+              <label class="label" for="repo">Code repository (optional)</label>
+              <input class="input" id="repo" name="repo" type="url" placeholder="https://github.com/..." autocomplete="off">
+            </div>
+          </section>
+
+          <!-- Step 4 -->
+          <section class="stack" data-step="4" aria-labelledby="step-4-title" hidden>
+            <h2 class="text-xl" id="step-4-title" tabindex="-1">Step 4 of 4: check and submit</h2>
+            <div class="stack" style="--gap: var(--space-l)" id="review"></div>
+            <label class="check"><input type="checkbox" name="conduct" required> I have read the code of conduct and agree to it</label>
+          </section>
+
+          <!-- After submitting -->
+          <section class="empty-state" data-step="done" aria-labelledby="done-title" hidden>
+            <i data-icon="check-circle" class="text-success"></i>
+            <h2 id="done-title" tabindex="-1">You are registered</h2>
+            <p id="done-text"></p>
+            <button class="btn btn-primary" type="button" data-action="start-over-now">Register another team</button>
+          </section>
+        </div>
+
+        <div class="card-footer split" id="wizard-nav">
+          <button class="btn btn-ghost" type="button" data-action="back"><i data-icon="arrow-left"></i> Back</button>
+          <div class="cluster push-right">
+            <button class="btn btn-primary" type="button" data-action="next">Next <i data-icon="arrow-right"></i></button>
+            <button class="btn btn-primary" type="submit" hidden>Submit registration</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container container-narrow split">
+      <p>Spring Build Weekend, 24 to 26 April 2026, Bucharest.</p>
+      <a href="mailto:help@example.com">help@example.com</a>
+    </div>
+  </footer>
+</body>
+</html>

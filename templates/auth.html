@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in | Nimbus</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <style>
+    @layer components {
+      /* Two columns on large screens: brand panel and form. One column on phones. */
+      .auth {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        min-block-size: 100dvh;
+      }
+
+      .auth-brand {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: var(--space-2xl);
+        padding: var(--space-2xl);
+      }
+
+      .auth-form {
+        display: grid;
+        place-items: center;
+        padding: var(--space-xl) var(--space-m);
+      }
+
+      .auth-form > div {
+        inline-size: min(100%, 24rem);
+      }
+
+      @media (width < 56rem) {
+        .auth { grid-template-columns: minmax(0, 1fr); }
+        .auth-brand { display: none; }
+      }
+
+      /* Show/hide password button sits inside the input's right edge */
+      .password-field {
+        position: relative;
+      }
+
+      .password-field .input {
+        padding-inline-end: 3rem;
+      }
+
+      .password-field .btn {
+        position: absolute;
+        inset-block-start: 50%;
+        inset-inline-end: 0.25rem;
+        translate: 0 -50%;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: var(--space-s);
+        color: var(--text-muted);
+        font-size: var(--text-sm);
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        border-block-start: 1px solid var(--border);
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="auth.js"></script>
+</head>
+<body>
+  <div class="auth">
+    <!-- The one gradient on this page -->
+    <aside class="auth-brand bg-gradient">
+      <a class="navbar-brand" href="landing.html"><i data-icon="cloud"></i> Nimbus</a>
+      <figure class="glass rounded-l p-xl stack m-0" style="--gap: var(--space-l)">
+        <p class="text-xl">"We set up our board in two minutes and spent the rest of the weekend building. Our demo was the only one that worked on the first try."</p>
+        <figcaption class="flex items-center gap-s">
+          <span class="avatar">AP</span>
+          <span><strong class="block">Ana Popescu</strong><span class="text-sm text-muted">Team lead, Pixel Pushers</span></span>
+        </figcaption>
+      </figure>
+      <p class="text-sm" style="opacity: 0.85">Trusted by 2,000+ student teams.</p>
+    </aside>
+
+    <main class="auth-form">
+      <div class="stack" style="--gap: var(--space-l)">
+        <div class="split">
+          <a class="navbar-brand hide-desktop" href="landing.html"><i data-icon="cloud" class="text-brand"></i> Nimbus</a>
+          <button class="btn btn-ghost btn-icon push-right" type="button" data-theme-toggle></button>
+        </div>
+
+        <div class="tabs" data-tabs>
+          <div role="tablist" aria-label="Account" class="w-full">
+            <button role="tab" type="button" id="tab-signin" aria-controls="panel-signin" aria-selected="true" class="flex-1">Sign in</button>
+            <button role="tab" type="button" id="tab-signup" aria-controls="panel-signup" aria-selected="false" class="flex-1">Create account</button>
+          </div>
+
+          <div role="tabpanel" id="panel-signin" aria-labelledby="tab-signin">
+            <form class="stack" data-validate id="signin-form">
+              <div class="stack" style="--gap: var(--space-2xs)">
+                <h1 class="text-2xl">Welcome back</h1>
+                <p class="text-muted">Sign in to continue to your boards.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="signin-email">Email</label>
+                <input class="input" id="signin-email" name="email" type="email" autocomplete="email" required>
+              </div>
+              <div class="field">
+                <div class="split">
+                  <label class="label" for="signin-password">Password</label>
+                  <a class="text-sm" href="#" onclick="event.preventDefault(); VWA.toast('Reset link sent, if the address has an account.')">Forgot password?</a>
+                </div>
+                <div class="password-field">
+                  <input class="input" id="signin-password" name="password" type="password" autocomplete="current-password" required>
+                  <button class="btn btn-ghost btn-icon btn-sm" type="button" data-toggle-password aria-label="Show password" aria-pressed="false"><i data-icon="eye"></i></button>
+                </div>
+              </div>
+              <label class="check"><input type="checkbox" name="remember" checked> Keep me signed in</label>
+              <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+            </form>
+          </div>
+
+          <div role="tabpanel" id="panel-signup" aria-labelledby="tab-signup" hidden>
+            <form class="stack" data-validate id="signup-form">
+              <div class="stack" style="--gap: var(--space-2xs)">
+                <h1 class="text-2xl">Create your account</h1>
+                <p class="text-muted">Free for student teams. No credit card.</p>
+              </div>
+              <div class="field">
+                <label class="label" for="signup-name">Full name</label>
+                <input class="input" id="signup-name" name="name" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label class="label" for="signup-email">University email</label>
+                <input class="input" id="signup-email" name="email" type="email" autocomplete="email" required>
+              </div>
+              <div class="field">
+                <label class="label" for="signup-password">Password</label>
+                <div class="password-field">
+                  <input class="input" id="signup-password" name="password" type="password" autocomplete="new-password" minlength="8" required aria-describedby="password-hint strength-text">
+                  <button class="btn btn-ghost btn-icon btn-sm" type="button" data-toggle-password aria-label="Show password" aria-pressed="false"><i data-icon="eye"></i></button>
+                </div>
+                <div class="flex items-center gap-s">
+                  <div class="progress grow" id="strength" aria-hidden="true"><span></span></div>
+                  <span class="text-sm font-semibold nowrap" id="strength-text"></span>
+                </div>
+                <p class="field-hint" id="password-hint">At least 8 characters. Mix letters, numbers and symbols for a stronger password.</p>
+              </div>
+              <label class="check"><input type="checkbox" name="terms" required> I agree to the terms and privacy policy</label>
+              <button class="btn btn-primary btn-block" type="submit">Create account</button>
+            </form>
+          </div>
+        </div>
+
+        <p class="divider">or</p>
+        <a class="btn btn-outline btn-block" href="dashboard.html"><i data-icon="eye"></i> Explore the demo without an account</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

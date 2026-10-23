@@ -1,0 +1,46 @@
+/*
+  YOUR STYLES
+  This file is linked after arsenal.css and is not inside a cascade layer,
+  so any rule here wins over the arsenal, whatever its specificity.
+
+  One consequence: a rule here also wins over the arsenal's utility classes.
+  If you write a component and still want .mt-l or .text-center to adjust it,
+  put the component inside @layer components { ... } (see the example below).
+*/
+
+/* 1. Brand. The fastest way is a preset on <html> in index.html:
+        <html lang="en" data-preset="forest">
+      (indigo, forest, editorial or candy). Each one sets the brand colors, corner
+      radii and heading font together, and every component follows.
+
+      For your own colors, uncomment the block below instead. The theme tool
+      (tools/theme.html) generates it for you and checks the contrast. */
+/*
+:root {
+  --brand: #0369a1;
+  --accent: #be123c;
+  --radius-m: 12px;
+  --font-heading: Georgia, serif;
+}
+*/
+
+/* 2. Your own components. Inside the components layer, utilities can still override them. */
+@layer components {
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    padding: var(--space-s) var(--space-m);
+    border-block-end: 1px solid var(--border);
+  }
+
+  .task-item:last-child {
+    border-block-end: 0;
+  }
+
+  .task-item > span {
+    flex: 1; /* takes the free space and pushes the button to the right */
+  }
+}
+
+/* 3. One-off fixes for this page go here, outside any layer. */

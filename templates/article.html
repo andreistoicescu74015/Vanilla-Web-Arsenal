@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flexbox in ten minutes | Nimbus blog</title>
+  <meta name="description" content="The two axes, the five properties you use every day, and the one-line fix for overflowing children.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <style>
+    @layer components {
+      /* Thin bar at the very top that fills as you read */
+      .reading-progress {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: calc(var(--z-sticky) + 1);
+        block-size: 3px;
+        background-color: var(--primary);
+        transform-origin: left;
+        scale: var(--progress, 0) 1;
+      }
+
+      .toc {
+        position: sticky;
+        top: 6rem;
+        align-self: start;
+      }
+
+      .toc a {
+        display: block;
+        padding: 0.3rem 0 0.3rem var(--space-s);
+        border-inline-start: 2px solid var(--border);
+        color: var(--text-muted);
+        font-size: var(--text-sm);
+        text-decoration: none;
+      }
+
+      .toc a:hover {
+        color: var(--text);
+      }
+
+      .toc a[aria-current="true"] {
+        border-inline-start-color: var(--primary);
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .article-body {
+        font-size: var(--text-lg);
+      }
+
+      /* The flex: 1 figure, drawn with real boxes instead of a picture of boxes */
+      .flex-demo {
+        display: flex;
+        gap: var(--space-s);
+        padding: var(--space-m);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-l);
+        background-color: var(--surface);
+      }
+
+      .flex-demo > div {
+        flex: 1 1 0;
+        min-inline-size: 0;
+        padding: var(--space-s);
+        border: 1px dashed color-mix(in oklab, var(--primary) 55%, transparent);
+        border-radius: var(--radius-m);
+        background-color: color-mix(in oklab, var(--primary) 12%, transparent);
+        font-size: var(--text-sm);
+        text-align: center;
+        overflow-wrap: anywhere;
+      }
+
+      .flex-demo code {
+        display: block;
+        margin-block-end: var(--space-2xs);
+        background: none;
+        color: var(--link);
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/sample-data.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="article.js"></script>
+</head>
+<body>
+  <div class="reading-progress" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="navbar-brand" href="landing.html"><i data-icon="cloud" class="text-brand"></i> Nimbus</a>
+      <nav class="navbar-links" id="blog-nav" aria-label="Main">
+        <a href="landing.html">Product</a>
+        <a href="#" aria-current="page">Blog</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="blog-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <header class="container py-3xl">
+      <div class="stack max-w-l" style="--gap: var(--space-l)">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <ol><li><a href="#">Blog</a></li><li><a href="#">CSS</a></li><li><span aria-current="page">Flexbox in ten minutes</span></li></ol>
+      </nav>
+      <div class="cluster"><span class="badge badge-primary">CSS</span><span class="badge">Layout</span></div>
+      <h1>Flexbox in ten minutes</h1>
+      <p class="lead">The two axes, the five properties you use every day, and the one-line fix for overflowing children.</p>
+      <div class="flex items-center gap-s">
+        <span class="avatar">AP</span>
+        <div>
+          <p class="font-semibold">Ana Popescu</p>
+          <p class="text-sm text-muted"><time datetime="2026-09-12">Sep 12, 2026</time> &middot; 10 min read</p>
+        </div>
+      </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <img class="rounded-l w-full" data-placeholder="Flexbox" data-hue="175" width="1600" height="640" alt="">
+    </div>
+
+    <div class="container with-sidebar sidebar-right py-3xl" style="--sidebar-width: 14rem; --gap: var(--space-3xl); --content-min: 65%">
+      <article class="prose article-body" id="article">
+        <p>Flexbox lays out items in one direction at a time: a row or a column. That single idea explains almost every property, so we start there.</p>
+
+        <h2 id="axes">Two axes</h2>
+        <p>The <strong>main axis</strong> runs in the direction of <code>flex-direction</code>. With the default <code>row</code>, it goes left to right. The <strong>cross axis</strong> is perpendicular to it.</p>
+        <p><code>justify-content</code> always works on the main axis and <code>align-items</code> on the cross axis. Change the direction to <code>column</code> and the two properties swap what they look like they do.</p>
+        <div class="alert">
+          <i data-icon="info"></i>
+          <div><p class="alert-title">Tip</p><p>Practice with the interactive playground in <code>tools/flexbox.html</code>.</p></div>
+        </div>
+
+        <h2 id="five">The five properties you use every day</h2>
+        <ol>
+          <li><code>display: flex</code> turns the children into flex items.</li>
+          <li><code>gap</code> adds space between items, never at the edges.</li>
+          <li><code>justify-content</code> distributes leftover space on the main axis.</li>
+          <li><code>align-items</code> positions items on the cross axis.</li>
+          <li><code>flex-wrap: wrap</code> lets items move to the next line.</li>
+        </ol>
+        <pre><code>.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}</code></pre>
+
+        <h2 id="grow">Grow, shrink and basis</h2>
+        <p>Each item has a starting size (<code>flex-basis</code>), a share of the extra space it may take (<code>flex-grow</code>), and a share of the missing space it gives up (<code>flex-shrink</code>). The shorthand <code>flex: 1</code> means "start from zero and share equally".</p>
+        <figure>
+          <div class="flex-demo">
+            <div><code>flex: 1</code>Short</div>
+            <div><code>flex: 1</code>A much longer label than the others</div>
+            <div><code>flex: 1</code>Medium text</div>
+          </div>
+          <figcaption>Three items with flex: 1 share the row equally, whatever the length of their text.</figcaption>
+        </figure>
+
+        <h2 id="overflow">The overflow fix</h2>
+        <p>A flex item will not shrink below the width of its content by default. A long URL or a wide table then pushes the layout off the screen.</p>
+        <blockquote>Add <code>min-width: 0</code> to the flex item that should be allowed to shrink.</blockquote>
+        <p>In the arsenal, that is the <code>.min-w-0</code> utility.</p>
+
+        <h2 id="next">Where to go next</h2>
+        <p>Once rows and columns feel natural, learn grid for two-dimensional layouts. The two work together: grid for the page, flexbox for the pieces inside it.</p>
+      </article>
+
+      <aside class="toc hide-mobile" aria-label="On this page">
+        <p class="sidenav-title m-0 mb-s p-0">On this page</p>
+        <nav id="toc"></nav>
+      </aside>
+    </div>
+
+    <section class="container pb-xl">
+      <div class="card max-w-l">
+        <div class="card-body flex-row items-center flex-wrap" style="--gap: var(--space-m)">
+          <span class="avatar" style="--size: 3.5rem">AP</span>
+          <div class="grow">
+            <p class="font-semibold">Written by Ana Popescu</p>
+            <p class="text-sm text-muted">Designer at Nimbus. Writes about layout and design systems.</p>
+          </div>
+          <button class="btn btn-outline btn-sm" type="button" data-copy-url><i data-icon="link"></i> Copy link</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container split">
+      <p>&copy; 2026 Nimbus blog</p>
+      <a href="#main">Back to top</a>
+    </div>
+  </footer>
+</body>
+</html>

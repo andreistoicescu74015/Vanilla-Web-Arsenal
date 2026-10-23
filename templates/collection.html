@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop | Trailhead</title>
+  <meta name="description" content="Outdoor gear for long days outside: shoes, bags, clothing and accessories.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <style>
+    /* Page-specific styles. In @layer components so utility classes still override them. */
+    @layer components {
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: var(--space-m);
+      }
+
+      .toolbar .search {
+        flex: 1 1 16rem;
+      }
+
+      .toolbar .sort {
+        flex: 0 1 14rem;
+      }
+
+      .product-card .card-media {
+        aspect-ratio: 4 / 3;
+      }
+
+      .price {
+        font-family: var(--font-heading);
+        font-size: var(--text-xl);
+        font-weight: 700;
+      }
+
+      .product-card.is-sold-out .price {
+        color: var(--text-muted);
+      }
+
+      /* The cart drawer: header on top, footer at the bottom, items scroll in between */
+      #cart[open] {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #cart .modal-body {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .cart-line {
+        display: grid;
+        grid-template-columns: 4rem minmax(0, 1fr) auto;
+        align-items: center;
+        gap: var(--space-s);
+        padding-block: var(--space-s);
+        border-block-end: 1px solid var(--border);
+      }
+
+      .cart-line img {
+        border-radius: var(--radius-m);
+      }
+
+      .quantity {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2xs);
+      }
+
+      .quantity output {
+        min-inline-size: 2ch;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Headings receive focus after navigation; the outline would only distract */
+      [tabindex="-1"]:focus {
+        outline: none;
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/router.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/sample-data.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="collection.js"></script>
+</head>
+<body class="page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="navbar-brand" href="#/"><i data-icon="map-pin" class="text-brand"></i> Trailhead</a>
+      <nav class="navbar-links" id="shop-nav" aria-label="Main">
+        <a href="#/">All gear</a>
+        <a href="#/?category=Shoes">Shoes</a>
+        <a href="#/?category=Bags">Bags</a>
+        <a href="#/?category=Clothing">Clothing</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon" type="button" id="cart-button" data-dialog-open="cart" aria-label="Cart, empty">
+          <i data-icon="shopping-cart"></i>
+          <span class="badge badge-solid" id="cart-count" hidden>0</span>
+        </button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="shop-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- The list and the product pages are rendered into this element by collection.js -->
+  <main class="container py-2xl" id="main"></main>
+
+  <footer class="footer">
+    <div class="container split">
+      <p>&copy; 2026 Trailhead. A demo shop: nothing is charged and nothing ships.</p>
+      <p>Free returns within 30 days.</p>
+    </div>
+  </footer>
+
+  <!-- Short announcements for screen readers: result counts after a search or filter -->
+  <p class="visually-hidden" role="status" id="status"></p>
+
+  <dialog class="modal drawer" id="cart" aria-labelledby="cart-title">
+    <div class="modal-header">
+      <h2 class="text-xl" id="cart-title">Your cart</h2>
+      <button class="btn btn-ghost btn-icon btn-sm" type="button" data-dialog-close aria-label="Close cart"><i data-icon="x"></i></button>
+    </div>
+    <div class="modal-body" id="cart-lines"></div>
+    <div class="modal-footer" id="cart-footer"></div>
+  </dialog>
+</body>
+</html>

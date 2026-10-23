@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tasks | Nimbus</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <style>
+    @layer components {
+      .task {
+        display: flex;
+        align-items: center;
+        gap: var(--space-s);
+        padding: var(--space-s) var(--space-m);
+        border-block-end: 1px solid var(--border);
+        animation: vwa-fade-in var(--duration) var(--ease-out);
+      }
+
+      .task:last-child {
+        border-block-end: 0;
+      }
+
+      .task a {
+        flex: 1;
+        min-inline-size: 0;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .task a:hover {
+        text-decoration: underline;
+      }
+
+      .task.is-done a {
+        color: var(--text-muted);
+        text-decoration: line-through;
+      }
+
+      /* Headings receive focus after navigation; the outline would only distract */
+      [tabindex="-1"]:focus {
+        outline: none;
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/router.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/sample-data.js"></script>
+  <script defer src="../arsenal/js/mock-api.js"></script>
+  <script defer src="../arsenal/js/charts.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body class="page">
+  <a class="skip-link" href="#view">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container container-narrow navbar-inner">
+      <a class="navbar-brand" href="#/"><i data-icon="cloud" class="text-brand"></i> Nimbus</a>
+      <nav class="navbar-links" id="app-nav" aria-label="Main">
+        <a href="#/">Tasks</a>
+        <a href="#/stats">Stats</a>
+        <a href="#/about">About</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="app-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Every page of the app is rendered into this element by app.js -->
+  <main class="container container-narrow py-2xl" id="view"></main>
+
+  <!-- Screen readers hear short summaries from here ("3 tasks shown") instead of the whole list -->
+  <p class="visually-hidden" role="status" id="list-status"></p>
+
+  <footer class="footer">
+    <div class="container container-narrow split">
+      <p>A single-page app in plain JavaScript: hash router, store, mock API.</p>
+      <label class="switch"><input type="checkbox" role="switch" id="flaky"> Simulate a flaky network</label>
+    </div>
+  </footer>
+</body>
+</html>
