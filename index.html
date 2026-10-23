@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vanilla Web Arsenal | HTML, CSS and JavaScript, ready for a hackathon</title>
+  <meta name="description" content="A toolkit of layout primitives, components, effects, templates and tools in plain HTML, CSS and JavaScript. No framework, no build step, works offline.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3C/svg%3E">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="arsenal/css/arsenal.css">
+  <script defer src="arsenal/js/dom.js"></script>
+  <script defer src="arsenal/js/utils.js"></script>
+  <script defer src="arsenal/js/icons.js"></script>
+  <script defer src="arsenal/js/ui.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="navbar-brand" href="index.html"><i data-icon="layers" class="text-brand"></i> Vanilla Web Arsenal</a>
+      <nav class="navbar-links" id="site-nav" aria-label="Main">
+        <a href="catalog/index.html">Catalog</a>
+        <a href="#templates">Templates</a>
+        <a href="#tools">Tools</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero bg-aurora">
+      <div class="container stack items-center gap-l">
+        <span class="eyebrow animate-fade-down"><i data-icon="code"></i> HTML + CSS + JavaScript, nothing else</span>
+        <h1 class="max-w-l animate-fade-up">Build a polished website <span class="gradient-text">without a framework</span></h1>
+        <p class="lead animate-fade-up" style="--delay: 100ms">Layout primitives, components, page templates and design tools, prepared before the hackathon. Open a file and it runs: no install, no build step, no internet.</p>
+        <div class="cluster animate-fade-up" style="--delay: 200ms; --justify: center">
+          <a class="btn btn-gradient btn-lg" href="catalog/index.html">Open the catalog <i data-icon="arrow-right"></i></a>
+          <a class="btn btn-outline btn-lg" href="#start">Start a project</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="start">
+      <div class="container">
+        <div class="section-header section-header-start">
+          <h2>From zero to a running page in three steps</h2>
+          <p class="lead">Everything runs from disk, so a double-click is enough to start.</p>
+        </div>
+        <ol role="list" class="cols-3" style="--gap: var(--space-xl)" data-reveal-group>
+          <li class="stack" data-reveal>
+            <span class="step-number">1</span>
+            <h3 class="text-lg">Copy the starter</h3>
+            <p class="text-muted">Copy <code>starter/</code> to a new folder next to <code>arsenal/</code>, for example <code>project/</code>.</p>
+          </li>
+          <li class="stack" data-reveal>
+            <span class="step-number">2</span>
+            <h3 class="text-lg">Pick a look</h3>
+            <p class="text-muted">Add <code>data-preset="forest"</code> (or indigo, editorial, candy) to <code>&lt;html&gt;</code>, or set your own brand color.</p>
+          </li>
+          <li class="stack" data-reveal>
+            <span class="step-number">3</span>
+            <h3 class="text-lg">Paste and adapt</h3>
+            <p class="text-muted">Take sections from the page builder and components from the catalog, then change the text.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section bg-surface" id="templates">
+      <div class="container">
+        <div class="section-header">
+          <h2>Complete pages to start from</h2>
+          <p class="lead">Each one uses realistic content and works offline. Open it, then read its source.</p>
+        </div>
+        <div class="auto-grid" style="--min: 18rem" data-reveal-group>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="star"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="templates/landing.html">Landing page</a></h3>
+              <p class="text-muted">Hero, logo strip, bento features, steps, stats, testimonials, pricing, FAQ and contact.</p>
+            </div>
+          </article>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="bar-chart"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="templates/dashboard.html">Dashboard</a></h3>
+              <p class="text-muted">Sidebar, stat cards, charts and a task table with loading, empty and error states.</p>
+            </div>
+          </article>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="shopping-cart"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="templates/collection.html">Collection and shop</a></h3>
+              <p class="text-muted">Search, filters, sorting and pages over product cards, a detail view and a cart.</p>
+            </div>
+          </article>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="layers"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="templates/app.html">Single-page app</a></h3>
+              <p class="text-muted">Router, store and mock API working together: list, detail, stats and a 404 page.</p>
+            </div>
+          </article>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="check-circle"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="templates/wizard.html">Multi-step form</a></h3>
+              <p class="text-muted">A stepper, validation on every step, an image upload with preview and a review page.</p>
+            </div>
+          </article>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="lock"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="templates/auth.html">Sign in and sign up</a></h3>
+              <p class="text-muted">Split screen, inline validation, show password and a strength meter in words.</p>
+            </div>
+          </article>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="book-open"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="templates/article.html">Article</a></h3>
+              <p class="text-muted">Readable long-form text, a table of contents that follows you and a reading progress bar.</p>
+            </div>
+          </article>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="monitor"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="templates/slides.html">Pitch slides</a></h3>
+              <p class="text-muted">The final presentation in the browser: arrow keys, full screen and a slide counter.</p>
+            </div>
+          </article>
+          <article class="card card-interactive" data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="file-text"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="starter/index.html">Starter</a></h3>
+              <p class="text-muted">The empty project to copy on day one, with comments that explain each part.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <div class="container">
+        <div class="section-header section-header-start">
+          <h2>Offline tools for design decisions</h2>
+          <p class="lead">The answers you would otherwise search for during the event.</p>
+        </div>
+        <div class="auto-grid" style="--min: 18rem" data-reveal-group>
+          <article class="card card-interactive spotlight" data-spotlight data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="grid"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="tools/page-builder.html">Page builder</a></h3>
+              <p class="text-muted">Pick and order sections, choose a theme preset, download a finished page.</p>
+            </div>
+          </article>
+          <article class="card card-interactive spotlight" data-spotlight data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="arrow-right"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="tools/flexbox.html">Flexbox playground</a></h3>
+              <p class="text-muted">Every flexbox property, live, with the CSS to copy.</p>
+            </div>
+          </article>
+          <article class="card card-interactive spotlight" data-spotlight data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="layers"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="tools/grid.html">Grid playground</a></h3>
+              <p class="text-muted">Tracks, areas, spans and auto-fit, with presets for common layouts.</p>
+            </div>
+          </article>
+          <article class="card card-interactive spotlight" data-spotlight data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="eye"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="tools/contrast.html">Contrast checker</a></h3>
+              <p class="text-muted">WCAG ratios for any two colors, and a fix when a pair fails.</p>
+            </div>
+          </article>
+          <article class="card card-interactive spotlight" data-spotlight data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="trending-up"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="tools/clamp.html">Fluid size generator</a></h3>
+              <p class="text-muted">clamp() values and full type scales that grow with the screen.</p>
+            </div>
+          </article>
+          <article class="card card-interactive spotlight" data-spotlight data-reveal>
+            <div class="card-body">
+              <div class="icon-box"><i data-icon="sparkles"></i></div>
+              <h3 class="text-lg"><a class="card-link" href="tools/theme.html">Theme builder</a></h3>
+              <p class="text-muted">Brand colors, radius, font and spacing, previewed on real components.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-surface">
+      <div class="container with-sidebar" style="--sidebar-width: 22rem; --gap: var(--space-3xl)">
+        <div class="stack gap-m">
+          <h2>Two folders you copy into any project</h2>
+          <p class="text-muted">The CSS is split into cascade layers, so your own styles always win. The JavaScript files are plain scripts that also work when the page opens from disk.</p>
+          <a class="btn btn-primary self-start" href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki"><i data-icon="book-open"></i> Read the wiki</a>
+        </div>
+        <div class="cols-2 gap-m">
+          <div class="card"><div class="card-body">
+            <h3 class="text-lg flex items-center gap-xs"><i data-icon="layers" class="text-brand"></i> css/</h3>
+            <ul role="list" class="stack gap-xs text-sm">
+              <li><code>tokens.css</code> colors, spacing, type, four presets</li>
+              <li><code>layout.css</code> stack, cluster, sidebar, grids</li>
+              <li><code>components.css</code> buttons to steppers</li>
+              <li><code>effects.css</code> glass, glow, motion</li>
+              <li><code>utilities.css</code> one-property classes</li>
+            </ul>
+          </div></div>
+          <div class="card"><div class="card-body">
+            <h3 class="text-lg flex items-center gap-xs"><i data-icon="code" class="text-brand"></i> js/</h3>
+            <ul role="list" class="stack gap-xs text-sm">
+              <li><code>dom.js</code> $, on, h, html templates</li>
+              <li><code>store.js</code> and <code>router.js</code> for apps</li>
+              <li><code>http.js</code> and <code>mock-api.js</code> for data</li>
+              <li><code>ui.js</code> modals, tabs, toasts, forms</li>
+              <li><code>charts.js</code> bar, line and donut charts</li>
+              <li><code>icons.js</code> 79 inline SVG icons</li>
+            </ul>
+          </div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container split">
+      <p>Vanilla Web Arsenal. Prepared by the team, for the team.</p>
+      <div class="cluster">
+        <a href="catalog/index.html">Catalog</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
