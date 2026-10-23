@@ -1,0 +1,162 @@
+/*
+  CHARTS
+  Styles for the SVG charts drawn by js/charts.js (bar, line, donut).
+  Change the series colors here, or set --chart-1 ... --chart-5 on one chart.
+*/
+
+.chart {
+  --chart-1: var(--primary);
+  --chart-2: var(--accent);
+  --chart-3: light-dark(#64748b, #94a3b8);
+  --chart-4: var(--info-text);
+  --chart-5: var(--warning-text);
+  position: relative;
+  display: block;
+}
+
+.chart svg {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+
+.chart-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chart-label,
+.chart-axis {
+  fill: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+.chart-value {
+  fill: var(--text);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Bars grow from the bottom on the first draw */
+.chart-bar {
+  fill: var(--chart-1);
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+
+.chart-bar.is-highlight {
+  fill: var(--chart-2);
+}
+
+.chart:not(.is-drawn) .chart-bar {
+  animation: vwa-bar-grow 0.6s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+@keyframes vwa-bar-grow {
+  from { scale: 1 0; }
+}
+
+.chart-line {
+  fill: none;
+  stroke: var(--color);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.chart-area {
+  fill: var(--color);
+  opacity: 0.12;
+}
+
+.chart-dot {
+  fill: var(--color);
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+
+/* Donut: the figure with the total in the middle, and the legend next to it */
+.chart-donut {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-l);
+}
+
+.chart-donut-figure {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.chart-donut-track {
+  fill: none;
+  stroke: var(--surface-2);
+  stroke-width: 22;
+}
+
+.chart-segment {
+  fill: none;
+  stroke: var(--color);
+  stroke-width: 22;
+}
+
+.chart-donut-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.chart-donut-center strong {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+}
+
+.chart-donut-center span {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-l);
+  margin-block-start: var(--space-s);
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0;
+}
+
+/* Donut legend: one row per segment, values lined up */
+.chart-legend-list {
+  flex-direction: column;
+  flex: 1;
+  min-inline-size: 12rem;
+  margin: 0;
+}
+
+.chart-legend-list li > strong {
+  margin-inline-start: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-swatch {
+  flex-shrink: 0;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border-radius: 3px;
+  background-color: var(--color);
+}

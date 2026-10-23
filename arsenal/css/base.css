@@ -1,0 +1,167 @@
+/*
+  BASE
+  Default look of plain HTML elements (no classes needed):
+  body, headings, links, code, tables, focus outlines.
+*/
+
+html {
+  scroll-padding-top: var(--space-3xl); /* anchor links do not end up under a sticky header */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  line-height: var(--leading-tight);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+h1 { font-size: var(--text-4xl); letter-spacing: -0.025em; }
+h2 { font-size: var(--text-3xl); letter-spacing: -0.02em; }
+h3 { font-size: var(--text-2xl); }
+h4 { font-size: var(--text-xl); }
+h5 { font-size: var(--text-lg); }
+h6 { font-size: var(--text-base); }
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Keyboard users see where they are. :focus-visible does not show the outline on mouse clicks. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+::selection {
+  background-color: color-mix(in oklab, var(--primary) 30%, transparent);
+}
+
+strong,
+b {
+  font-weight: 700;
+}
+
+small {
+  font-size: var(--text-sm);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+:not(pre) > code {
+  padding: 0.1em 0.35em;
+  white-space: nowrap;
+  border-radius: var(--radius-s);
+  background-color: var(--surface-2);
+}
+
+kbd {
+  padding: 0.1em 0.45em;
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-s);
+  background-color: var(--surface);
+}
+
+pre {
+  overflow-x: auto;
+  padding: var(--space-m);
+  border-radius: var(--radius-m);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+blockquote {
+  padding-inline-start: var(--space-m);
+  border-inline-start: 4px solid var(--primary);
+  font-size: var(--text-lg);
+}
+
+ul:not([role="list"]),
+ol:not([role="list"]) {
+  padding-inline-start: 1.25em;
+}
+
+li + li {
+  margin-top: var(--space-2xs);
+}
+
+[role="list"] > li + li {
+  margin-top: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: start;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+legend {
+  padding: 0;
+  font-weight: 600;
+}
+
+/* Native checkboxes, radios, range sliders and progress bars take the brand color */
+input,
+progress {
+  accent-color: var(--primary);
+}
+
+label {
+  cursor: pointer;
+}
+
+/* The reset removes all margins, but a modal <dialog> is centered by margin: auto */
+dialog {
+  margin: auto;
+}
+
+img[alt] {
+  font-style: italic; /* the alt text shown when an image fails to load looks different from body text */
+}

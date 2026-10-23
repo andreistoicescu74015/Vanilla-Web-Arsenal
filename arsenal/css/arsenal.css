@@ -1,0 +1,27 @@
+/*
+  VANILLA WEB ARSENAL
+  Link this one file and you get everything:
+
+    <link rel="stylesheet" href="arsenal/css/arsenal.css">
+
+  Each file goes into its own cascade layer. Layers listed later win over earlier ones,
+  so a utility class always beats a component style. Your own CSS, written outside
+  any layer (for example in css/style.css), beats all of them without needing
+  higher specificity or !important.
+
+  To use only some parts, link the individual files instead. Every file reads the
+  variables from tokens.css, so always keep tokens.css. fonts.css holds the embedded
+  heading font; leave it out and headings use the system font.
+*/
+
+@layer reset, tokens, base, layout, components, effects, utilities;
+
+@import url("fonts.css");
+@import url("reset.css") layer(reset);
+@import url("tokens.css") layer(tokens);
+@import url("base.css") layer(base);
+@import url("layout.css") layer(layout);
+@import url("components.css") layer(components);
+@import url("charts.css") layer(components);
+@import url("effects.css") layer(effects);
+@import url("utilities.css") layer(utilities);

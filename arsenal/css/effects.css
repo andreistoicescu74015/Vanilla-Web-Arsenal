@@ -1,0 +1,308 @@
+/*
+  EFFECTS
+  Visual polish: gradients, glass, glowing borders, decorative backgrounds,
+  entrance animations and scroll reveals. In the spirit of Animate.css and AOS.
+  Every animation here is switched off for people who ask for reduced motion (see reset.css).
+*/
+
+/* ---------- Text ---------- */
+
+.gradient-text {
+  background-image: linear-gradient(90deg, var(--brand), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Surfaces ---------- */
+
+/* Frosted glass. Looks best over a colorful background (.bg-aurora, an image). */
+.glass {
+  border: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+  background-color: color-mix(in oklab, var(--bg) 60%, transparent);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+
+/* Solid brand gradient block (CTA sections, banners) */
+.bg-gradient {
+  background-image: linear-gradient(135deg, var(--brand), var(--accent));
+  color: #ffffff;
+}
+
+/* Solid brand block (call-to-action bands, highlighted panels). Text turns white;
+   utilities.css keeps muted text and focus rings readable on it. */
+.bg-primary {
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.bg-surface {
+  background-color: var(--surface);
+}
+
+/* Animated gradient border. @property lets the browser animate --angle,
+   which a normal custom property cannot do. */
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.glow-border {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--glow-bg, var(--card-bg, var(--bg))), var(--glow-bg, var(--card-bg, var(--bg)))) padding-box,
+    conic-gradient(from var(--angle), var(--brand), var(--accent), var(--brand)) border-box;
+  animation: vwa-rotate-angle 4s linear infinite;
+}
+
+@keyframes vwa-rotate-angle {
+  to { --angle: 360deg; }
+}
+
+/* Light that follows the mouse. Add data-spotlight to the element; ui.js sets --x and --y.
+   Only on devices with a mouse, and only while the pointer is over the element. */
+@media (hover: hover) {
+  .spotlight:hover {
+    background-image: radial-gradient(
+      28rem circle at var(--x, 50%) var(--y, 50%),
+      color-mix(in oklab, var(--brand) 12%, transparent),
+      transparent 45%
+    );
+  }
+}
+
+/* ---------- Decorative backgrounds ---------- */
+/* These draw on ::before / ::after behind the content, so text stays readable. */
+
+.bg-aurora,
+.bg-grid,
+.bg-dots {
+  position: relative;
+  isolation: isolate; /* keeps the z-index: -1 layers inside this element */
+}
+
+.bg-aurora {
+  overflow: hidden;
+}
+
+.bg-aurora::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  background:
+    radial-gradient(35% 45% at 20% 30%, color-mix(in oklab, var(--brand) 35%, transparent), transparent 70%),
+    radial-gradient(30% 40% at 80% 20%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 70%),
+    radial-gradient(40% 45% at 60% 85%, color-mix(in oklab, var(--brand) 22%, transparent), transparent 70%);
+  filter: blur(40px);
+  /* Fades out toward the bottom, so the glow has no hard edge where the section ends */
+  mask-image: linear-gradient(#000 40%, transparent 85%);
+}
+
+.bg-grid::after,
+.bg-dots::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at 50% 40%, black 20%, transparent 70%);
+}
+
+.bg-grid::after {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+}
+
+.bg-dots::after {
+  background-image: radial-gradient(circle, var(--border-strong) 1px, transparent 1.5px);
+  background-size: 1.25rem 1.25rem;
+}
+
+/* ---------- Hover effects ---------- */
+
+.hover-lift {
+  transition:
+    translate var(--duration) var(--ease-out),
+    box-shadow var(--duration) var(--ease-out);
+}
+
+.hover-lift:hover {
+  translate: 0 -4px;
+  box-shadow: var(--shadow-l);
+}
+
+.hover-grow {
+  transition: scale var(--duration) var(--ease-out);
+}
+
+.hover-grow:hover {
+  scale: 1.03;
+}
+
+/* ---------- Mock browser window (hero screenshots without real images) ---------- */
+
+.mock-window {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  background-color: light-dark(#ffffff, var(--surface));
+  box-shadow: var(--shadow-l), 0 30px 60px -20px color-mix(in oklab, var(--brand) 35%, transparent);
+  overflow: hidden;
+  text-align: start;
+}
+
+.mock-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  border-block-end: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+.mock-window-bar > span {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  border-radius: 50%;
+  background-color: var(--border-strong);
+}
+
+.mock-window-bar > span:nth-child(1) { background-color: #ff5f57; }
+.mock-window-bar > span:nth-child(2) { background-color: #febc2e; }
+.mock-window-bar > span:nth-child(3) { background-color: #28c840; }
+
+.mock-window-body {
+  padding: var(--space-l);
+}
+
+/* ---------- Marquee (endless logo strip) ---------- */
+/* <div class="marquee" data-marquee><div class="marquee-track">...</div></div>
+   ui.js duplicates the items of .marquee-track so the loop has no gap.
+   Hovering pauses it. */
+
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: var(--marquee-gap, 3rem);
+  inline-size: max-content;
+  animation: vwa-marquee var(--speed, 30s) linear infinite;
+}
+
+/* WCAG 2.2.2: moving content needs a way to stop it. Hover, keyboard focus inside,
+   and the pause button that ui.js adds under the strip all stop it. */
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track,
+.marquee.is-paused .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-toggle {
+  display: flex;
+  margin: var(--space-xs) auto 0;
+}
+
+/* Moves by exactly one copy of the items: half the track plus half a gap */
+@keyframes vwa-marquee {
+  to { translate: calc(-50% - var(--marquee-gap, 3rem) / 2) 0; }
+}
+
+/* ---------- Entrance animations (play once on page load) ---------- */
+/* <h1 class="animate-fade-up" style="--delay: 150ms"> */
+
+.animate-fade-in,
+.animate-fade-up,
+.animate-fade-down,
+.animate-zoom-in,
+.animate-slide-left,
+.animate-slide-right {
+  animation-duration: 0.7s;
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: both;
+  animation-delay: var(--delay, 0s);
+}
+
+.animate-fade-in { animation-name: vwa-fade-in; }
+.animate-fade-up { animation-name: vwa-fade-up; }
+.animate-fade-down { animation-name: vwa-fade-down; }
+.animate-zoom-in { animation-name: vwa-zoom-in; }
+.animate-slide-left { animation-name: vwa-slide-left; }
+.animate-slide-right { animation-name: vwa-slide-right; }
+
+.animate-float {
+  animation: vwa-float 6s ease-in-out infinite;
+}
+
+.animate-pulse {
+  animation: vwa-pulse 2s ease-in-out infinite;
+}
+
+/* Also defined in components.css; repeated so effects.css works on its own */
+@keyframes vwa-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes vwa-zoom-in {
+  from { opacity: 0; scale: 0.95; }
+}
+
+@keyframes vwa-fade-up {
+  from { opacity: 0; translate: 0 1.5rem; }
+}
+
+@keyframes vwa-fade-down {
+  from { opacity: 0; translate: 0 -1.5rem; }
+}
+
+@keyframes vwa-slide-left {
+  from { opacity: 0; translate: 2rem 0; }
+}
+
+@keyframes vwa-slide-right {
+  from { opacity: 0; translate: -2rem 0; }
+}
+
+@keyframes vwa-float {
+  50% { translate: 0 -10px; }
+}
+
+@keyframes vwa-pulse {
+  50% { opacity: 0.6; }
+}
+
+/* ---------- Reveal on scroll ---------- */
+/* <section data-reveal> fades up when it scrolls into view (ui.js adds .is-visible).
+   The .js class is added by ui.js, so without JavaScript nothing stays hidden.
+   data-reveal="left" / "right" / "zoom" change the direction. */
+
+.js [data-reveal] {
+  opacity: 0;
+  translate: 0 2rem;
+  transition:
+    opacity 0.7s var(--ease-out),
+    translate 0.7s var(--ease-out),
+    scale 0.7s var(--ease-out);
+  transition-delay: var(--delay, 0s);
+}
+
+/* An element waiting to slide in from the side sits partly off screen, which would
+   add a horizontal scrollbar on phones. clip cuts that overflow without breaking sticky. */
+body:has([data-reveal="left"], [data-reveal="right"]) {
+  overflow-x: clip;
+}
+
+.js [data-reveal="left"] { translate: 2rem 0; }
+.js [data-reveal="right"] { translate: -2rem 0; }
+.js [data-reveal="zoom"] { translate: none; scale: 0.92; }
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  translate: none;
+  scale: none;
+}

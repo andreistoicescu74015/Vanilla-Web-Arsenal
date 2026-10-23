@@ -1,0 +1,1588 @@
+/*
+  COMPONENTS
+  Ready-made pieces, in the spirit of Bootstrap: buttons, cards, navbar, forms, modal,
+  tabs, accordion, toast, dropdown, table, badges, alerts and more.
+  Copy the markup from catalog/index.html.
+
+  Pattern used everywhere: the base class sets the structure and reads custom
+  properties; a modifier class only changes those properties.
+    .btn         { background-color: var(--btn-bg); }
+    .btn-primary { --btn-bg: var(--primary); }
+
+  Classes are looks, data-* attributes are behavior: class="tabs" styles tabs,
+  data-tabs makes them work (ui.js).
+*/
+
+/* ---------- Icons (see js/icons.js) ---------- */
+
+.icon {
+  inline-size: var(--icon-size, 1.25em);
+  block-size: var(--icon-size, 1.25em);
+  flex-shrink: 0;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  --btn-bg: var(--surface-2);
+  --btn-fg: var(--text);
+  --btn-border: transparent;
+  --btn-hover-bg: color-mix(in oklab, var(--btn-bg), var(--text) 8%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  min-block-size: 2.75rem; /* 44px: comfortable touch target */
+  padding: 0.5rem 1.125rem;
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius-m);
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--duration) var(--ease-out),
+    border-color var(--duration) var(--ease-out),
+    box-shadow var(--duration) var(--ease-out),
+    translate var(--duration-fast) var(--ease-out);
+}
+
+.btn:hover {
+  background-color: var(--btn-hover-bg);
+}
+
+.btn:active {
+  translate: 0 1px;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-primary {
+  --btn-bg: var(--primary);
+  --btn-fg: var(--on-primary);
+  --btn-hover-bg: var(--primary-hover);
+}
+
+.btn-outline {
+  --btn-bg: transparent;
+  --btn-border: var(--border-strong);
+  --btn-hover-bg: var(--surface);
+}
+
+.btn-ghost {
+  --btn-bg: transparent;
+  --btn-hover-bg: var(--surface-2);
+}
+
+.btn-danger {
+  --btn-bg: var(--danger);
+  --btn-fg: #ffffff;
+  --btn-hover-bg: color-mix(in oklab, var(--danger), black 15%);
+}
+
+.btn-success {
+  --btn-bg: var(--success);
+  --btn-fg: #ffffff;
+  --btn-hover-bg: color-mix(in oklab, var(--success), black 15%);
+}
+
+/* For buttons on a dark or colored background (.bg-gradient, images) */
+.btn-light {
+  --btn-bg: #ffffff;
+  --btn-fg: #14161a;
+  --btn-hover-bg: #eceef2;
+}
+
+.btn-outline-light {
+  --btn-bg: transparent;
+  --btn-fg: #ffffff;
+  --btn-border: rgb(255 255 255 / 0.6);
+  --btn-hover-bg: rgb(255 255 255 / 0.12);
+}
+
+/* Gradient call-to-action with a soft colored glow */
+.btn-gradient {
+  --btn-fg: #ffffff;
+  background-image: linear-gradient(135deg, var(--brand), var(--accent));
+  box-shadow: 0 8px 24px -8px color-mix(in oklab, var(--brand) 70%, transparent);
+}
+
+.btn-gradient:hover {
+  translate: 0 -1px;
+  box-shadow: 0 12px 28px -8px color-mix(in oklab, var(--accent) 70%, transparent);
+}
+
+.btn-sm {
+  min-block-size: 2.25rem;
+  padding: 0.375rem 0.75rem;
+  font-size: var(--text-sm);
+}
+
+.btn-lg {
+  min-block-size: 3.25rem;
+  padding: 0.75rem 1.5rem;
+  font-size: var(--text-lg);
+}
+
+.btn-pill {
+  border-radius: var(--radius-full);
+}
+
+.btn-block {
+  inline-size: 100%;
+}
+
+/* Square button holding a single icon. Give it an aria-label. */
+.btn-icon {
+  inline-size: 2.75rem;
+  padding: 0;
+}
+
+.btn-icon.btn-sm {
+  inline-size: 2.25rem;
+}
+
+/* A count on an icon button: <button class="btn btn-icon">...<span class="badge badge-solid">3</span></button> */
+.btn-icon {
+  position: relative;
+}
+
+.btn-icon > .badge {
+  position: absolute;
+  inset-block-start: -0.35rem;
+  inset-inline-end: -0.35rem;
+  min-inline-size: 1.25rem;
+  justify-content: center;
+  padding-inline: 0.3rem;
+}
+
+/* Loading state: <button class="btn" aria-busy="true"> */
+.btn[aria-busy="true"]::before {
+  content: "";
+  inline-size: 1em;
+  block-size: 1em;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: vwa-spin 0.7s linear infinite;
+}
+
+.btn[aria-busy="true"] {
+  pointer-events: none;
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+  --card-bg: light-dark(#ffffff, var(--surface));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  background-color: var(--card-bg);
+  box-shadow: var(--shadow-s);
+  overflow: hidden;
+}
+
+/* flex: 1 makes all card bodies in a row stretch, so footers line up */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap, var(--space-s));
+  flex: 1;
+  padding: var(--space-l);
+}
+
+.card-media {
+  inline-size: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  padding: var(--space-m) var(--space-l);
+  border-block-start: 1px solid var(--border);
+}
+
+/* Makes the whole card clickable through one real link:
+   <a class="card-link" href="...">Title</a> stretches its ::after over the card. */
+.card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.card-interactive {
+  transition:
+    translate var(--duration) var(--ease-out),
+    box-shadow var(--duration) var(--ease-out),
+    border-color var(--duration) var(--ease-out);
+}
+
+.card-interactive:hover,
+.card-interactive:has(:focus-visible) {
+  translate: 0 -4px;
+  box-shadow: var(--shadow-l);
+  border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+}
+
+/* The one card in a row that should stand out (recommended plan) */
+.card-featured {
+  border: 2px solid var(--primary);
+  box-shadow: var(--shadow-l);
+}
+
+/* Colored square for a feature icon */
+.icon-box {
+  display: grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: var(--radius-m);
+  background-color: color-mix(in oklab, var(--primary) 12%, transparent);
+  color: var(--link);
+  --icon-size: 1.5rem;
+}
+
+/* ---------- Navbar ---------- */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  border-block-end: 1px solid var(--border);
+  background-color: color-mix(in oklab, var(--bg) 82%, transparent);
+  backdrop-filter: blur(12px) saturate(1.5);
+}
+
+.navbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-s);
+  min-block-size: 4rem;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-inline-end: auto; /* pushes links and actions to the right */
+  color: var(--text);
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.navbar-links a {
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-m);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duration), background-color var(--duration);
+}
+
+.navbar-links a:hover,
+.navbar-links a[aria-current="page"] {
+  color: var(--text);
+  background-color: var(--surface-2);
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.navbar-toggle {
+  display: none;
+}
+
+/* Mobile: links hide behind the toggle button and open as a full-width column.
+   order: 99 moves them after every other item, so they open on their own row. */
+@media (width < 48rem) {
+  .navbar-toggle {
+    display: inline-flex;
+  }
+
+  .navbar-links {
+    display: none;
+    order: 99;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    padding-block-end: var(--space-m);
+  }
+
+  .navbar:has(.navbar-toggle[aria-expanded="true"]) .navbar-links {
+    display: flex;
+  }
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  padding-block: clamp(var(--space-3xl), 10vw, 8rem);
+  text-align: center;
+}
+
+.hero > * {
+  margin-inline: auto;
+}
+
+/* On phones, the buttons in a hero stack at the same full width instead of
+   wrapping at two different widths */
+@media (width < 40rem) {
+  .hero .cluster > .btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* Small pill label above a heading */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  inline-size: fit-content; /* stays label-sized inside flex columns, which stretch children */
+  gap: var(--space-xs);
+  padding: 0.25rem 0.75rem;
+  border: 1px solid color-mix(in oklab, var(--primary) 35%, var(--border));
+  border-radius: var(--radius-full);
+  background-color: color-mix(in oklab, var(--primary) 8%, transparent);
+  color: var(--link);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* Intro paragraph, bigger and softer than body text */
+.lead {
+  max-inline-size: 60ch;
+  color: var(--text-muted);
+  font-size: var(--text-xl);
+  line-height: 1.5;
+}
+
+/* Section heading block: eyebrow, title, lead, centered */
+.section-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-s);
+  max-inline-size: 48rem;
+  margin-inline: auto;
+  margin-block-end: var(--space-2xl);
+  text-align: center;
+}
+
+/* Same block aligned to the start, for sections that should not all look the same */
+.section-header-start {
+  align-items: flex-start;
+  margin-inline: 0;
+  text-align: start;
+}
+
+/* ---------- Prose (articles, docs, legal pages) ---------- */
+/* Long-form text without classes on every element: spacing between paragraphs,
+   headings, lists and images comes from the .prose wrapper. */
+
+.prose {
+  max-inline-size: var(--prose-width);
+}
+
+.prose > * + * {
+  margin-block-start: 1.25em;
+}
+
+.prose > :is(h2, h3, h4) {
+  margin-block-start: 2em;
+}
+
+.prose > :is(h2, h3, h4) + * {
+  margin-block-start: 0.75em;
+}
+
+.prose h2 { font-size: var(--text-2xl); }
+.prose h3 { font-size: var(--text-xl); }
+.prose h4 { font-size: var(--text-lg); }
+
+.prose li + li {
+  margin-block-start: 0.5em;
+}
+
+.prose :is(img, video, pre) {
+  border-radius: var(--radius-m);
+}
+
+.prose figcaption {
+  margin-block-start: var(--space-xs);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+/* ---------- Forms ---------- */
+
+/* One form field: label, control, hint and error, stacked */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.input {
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-m);
+  background-color: var(--bg);
+  color: var(--text);
+  transition: border-color var(--duration), box-shadow var(--duration);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.input:hover {
+  border-color: var(--text-muted);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+  border-color: var(--primary);
+}
+
+textarea.input {
+  min-block-size: 7rem;
+  resize: vertical;
+}
+
+/* :user-invalid only turns red after the user touched the field, not on page load */
+.input:user-invalid,
+.input[aria-invalid="true"] {
+  border-color: var(--danger-text);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.field-hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.field-error {
+  color: var(--danger-text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.field-error:empty {
+  display: none;
+}
+
+/* Checkbox or radio with its label on one line */
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.check input {
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+  margin: 0;
+}
+
+/* Toggle switch: <label class="switch"><input type="checkbox" role="switch"> Text</label> */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.switch input {
+  appearance: none;
+  position: relative;
+  inline-size: 2.75rem;
+  block-size: 1.5rem;
+  margin: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--border-strong);
+  cursor: pointer;
+  transition: background-color var(--duration);
+}
+
+.switch input::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-start: 3px;
+  inline-size: calc(1.5rem - 6px);
+  block-size: calc(1.5rem - 6px);
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: var(--shadow-s);
+  transition: translate var(--duration) var(--ease-out);
+}
+
+.switch input:checked {
+  background-color: var(--primary);
+}
+
+.switch input:checked::before {
+  translate: 1.25rem 0;
+}
+
+/* Input with an attached button (search bars, newsletter forms) */
+.input-group {
+  display: flex;
+}
+
+.input-group > .input {
+  flex: 1;
+  min-inline-size: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.input-group > .btn {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* ---------- Badges ---------- */
+
+.badge {
+  --badge-color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  inline-size: fit-content;
+  gap: 0.25em;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-full);
+  background-color: color-mix(in oklab, var(--badge-color) 12%, transparent);
+  color: var(--badge-color);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.badge-primary { --badge-color: var(--link); }
+.badge-success { --badge-color: var(--success-text); }
+.badge-warning { --badge-color: var(--warning-text); }
+.badge-danger { --badge-color: var(--danger-text); }
+.badge-info { --badge-color: var(--info-text); }
+
+/* Filled badge, for counts on icon buttons */
+.badge-solid {
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+
+/* ---------- Alerts ---------- */
+
+.alert {
+  --alert-color: var(--info-text);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-s);
+  padding: var(--space-m);
+  border: 1px solid color-mix(in oklab, var(--alert-color) 35%, transparent);
+  border-radius: var(--radius-m);
+  background-color: color-mix(in oklab, var(--alert-color) 10%, var(--bg));
+  color: var(--text);
+}
+
+.alert > .icon {
+  color: var(--alert-color);
+}
+
+.alert-title {
+  color: var(--alert-color);
+  font-weight: 700;
+}
+
+.alert-success { --alert-color: var(--success-text); }
+.alert-warning { --alert-color: var(--warning-text); }
+.alert-danger { --alert-color: var(--danger-text); }
+
+/* ---------- Modal and drawer (native <dialog>) ---------- */
+
+.modal {
+  inline-size: min(100% - 2rem, var(--modal-width, 32rem));
+  max-block-size: min(100% - 2rem, 48rem);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  background-color: var(--bg);
+  color: var(--text);
+  box-shadow: var(--shadow-l);
+}
+
+.modal[open] {
+  animation: vwa-zoom-in var(--duration-slow) var(--ease-out);
+}
+
+.modal::backdrop {
+  background-color: rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal[open]::backdrop {
+  animation: vwa-fade-in var(--duration-slow) var(--ease-out);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  padding: var(--space-m) var(--space-l);
+  border-block-end: 1px solid var(--border);
+}
+
+.modal-body {
+  padding: var(--space-l);
+}
+
+.modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+  padding: var(--space-m) var(--space-l);
+  border-block-start: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+/* Drawer: same dialog, glued to the right edge, full height */
+.modal.drawer {
+  margin-block: 0;
+  margin-inline: auto 0;
+  inline-size: min(100%, var(--modal-width, 24rem));
+  block-size: 100dvh;
+  max-block-size: 100dvh;
+  border-radius: 0;
+  border-block: 0;
+  border-inline-end: 0;
+}
+
+.modal.drawer[open] {
+  animation: vwa-slide-in-right var(--duration-slow) var(--ease-out);
+}
+
+/* ---------- Tabs (behavior in ui.js) ---------- */
+
+.tabs [role="tablist"] {
+  display: flex;
+  gap: var(--space-2xs);
+  overflow-x: auto;
+  border-block-end: 1px solid var(--border);
+}
+
+.tabs [role="tab"] {
+  padding: 0.625rem 1rem;
+  border: 0;
+  border-block-end: 2px solid transparent;
+  margin-block-end: -1px;
+  background: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color var(--duration), border-color var(--duration);
+}
+
+.tabs [role="tab"]:hover {
+  color: var(--text);
+}
+
+.tabs [role="tab"][aria-selected="true"] {
+  border-block-end-color: var(--primary);
+  color: var(--text);
+}
+
+.tabs [role="tabpanel"] {
+  padding-block: var(--space-l);
+}
+
+/* .tabs.pills: tabs that look like a pill switch. For filters and view switches with no
+   panels, use the radio-based .segmented below instead. */
+.tabs.pills [role="tablist"] {
+  display: inline-flex;
+  padding: var(--space-2xs);
+  border: 0;
+  border-radius: var(--radius-m);
+  background-color: var(--surface-2);
+}
+
+.tabs.pills [role="tab"] {
+  padding: 0.375rem 0.75rem;
+  border: 0;
+  margin: 0;
+  border-radius: var(--radius-s);
+  font-size: var(--text-sm);
+}
+
+.tabs.pills [role="tab"][aria-selected="true"] {
+  background-color: light-dark(var(--bg), var(--border));
+  box-shadow: var(--shadow-s);
+}
+
+/* ---------- Segmented control (radio buttons) ---------- */
+/* For choosing one option that filters or switches a view (All / Open / Done, Week / Month).
+   Tabs are for showing one of several panels; this is for options. Native radios give
+   arrow-key support and a change event without JavaScript.
+
+   <fieldset class="segmented">
+     <legend class="visually-hidden">Show</legend>
+     <label><input type="radio" name="filter" value="all" checked> All</label>
+     <label><input type="radio" name="filter" value="done"> Done</label>
+   </fieldset> */
+
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  inline-size: fit-content; /* stays its own size inside flex columns (.field, .stack) */
+  gap: 2px;
+  padding: var(--space-2xs);
+  border: 0;
+  border-radius: var(--radius-m);
+  background-color: var(--surface-2);
+}
+
+.segmented > label {
+  position: relative;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius-s);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: color var(--duration), background-color var(--duration);
+}
+
+/* The radio covers its label, invisible but still focusable and clickable */
+.segmented > label > input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.segmented > label:hover {
+  color: var(--text);
+}
+
+.segmented > label:has(:checked) {
+  background-color: light-dark(var(--bg), var(--border));
+  color: var(--text);
+  box-shadow: var(--shadow-s);
+}
+
+.segmented > label:has(:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Accordion (native <details>) ---------- */
+/* Give several <details> the same name="..." and only one stays open at a time. */
+
+.accordion {
+  border-block-end: 1px solid var(--border);
+}
+
+.accordion > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  padding-block: var(--space-m);
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+
+.accordion > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Chevron drawn with two borders, rotated */
+.accordion > summary::after {
+  content: "";
+  flex-shrink: 0;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  rotate: 45deg;
+  translate: 0 -25%;
+  transition: rotate var(--duration) var(--ease-out);
+}
+
+.accordion[open] > summary::after {
+  rotate: -135deg;
+  translate: 0 25%;
+}
+
+.accordion-content {
+  padding-block-end: var(--space-m);
+  color: var(--text-muted);
+}
+
+/* Smooth open and close where the browser supports animating to height: auto */
+@supports (interpolate-size: allow-keywords) and selector(::details-content) {
+  .accordion {
+    interpolate-size: allow-keywords;
+  }
+
+  .accordion::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size var(--duration-slow) var(--ease-out),
+      content-visibility var(--duration-slow) allow-discrete;
+  }
+
+  .accordion[open]::details-content {
+    block-size: auto;
+  }
+}
+
+/* ---------- Dropdown (native <details>, closing behavior in ui.js) ---------- */
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown > summary {
+  list-style: none;
+}
+
+.dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
+.dropdown-menu {
+  position: absolute;
+  inset-block-start: calc(100% + 0.375rem);
+  inset-inline-start: 0;
+  z-index: var(--z-dropdown);
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 12rem;
+  padding: var(--space-2xs);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  background-color: var(--bg);
+  box-shadow: var(--shadow-l);
+  animation: vwa-fade-in var(--duration) var(--ease-out);
+}
+
+.dropdown-menu.align-end {
+  inset-inline: auto 0;
+}
+
+.dropdown-menu > a,
+.dropdown-menu > button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  inline-size: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: none;
+  color: var(--text);
+  text-align: start;
+  text-decoration: none;
+}
+
+.dropdown-menu > a:hover,
+.dropdown-menu > button:hover {
+  background-color: var(--surface-2);
+}
+
+.dropdown-menu > hr {
+  margin-block: var(--space-2xs);
+}
+
+/* ---------- Toast notifications (created by VWA.toast() in ui.js) ---------- */
+
+.toast-region {
+  position: fixed;
+  inset-block-end: var(--space-m);
+  inset-inline-end: var(--space-m);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  inline-size: min(100% - 2rem, 24rem);
+  pointer-events: none;
+}
+
+.toast {
+  --toast-color: var(--focus);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-s);
+  padding: var(--space-s) var(--space-m);
+  border-inline-start: 4px solid var(--toast-color);
+  border-radius: var(--radius-m);
+  background-color: var(--text);
+  color: var(--bg);
+  box-shadow: var(--shadow-l);
+  pointer-events: auto;
+  animation: vwa-toast-in var(--duration-slow) var(--ease-out);
+}
+
+.toast > .icon {
+  color: var(--toast-color);
+}
+
+.toast-message {
+  flex: 1;
+}
+
+.toast-close {
+  padding: 0 var(--space-2xs);
+  border: 0;
+  background: none;
+  color: inherit;
+  opacity: 0.7;
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+/* Optional action such as "Undo": VWA.toast("Deleted", { action: { label: "Undo", onClick } }) */
+.toast-action {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  white-space: nowrap;
+}
+
+/* The toast background is the inverted text color, so status colors use the opposite theme */
+.toast-success { --toast-color: light-dark(#4ade80, #15803d); }
+.toast-warning { --toast-color: light-dark(#fbbf24, #b45309); }
+.toast-danger { --toast-color: light-dark(#f87171, #b91c1c); }
+
+.toast.is-leaving {
+  animation: vwa-toast-out var(--duration) ease-in forwards;
+}
+
+/* ---------- Tooltip (CSS only) ---------- */
+/* <button data-tooltip="Copy" aria-label="Copy">. Screen readers ignore the tooltip
+   text, so put the same text in aria-label (or in the visible label). */
+
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  inset-block-end: calc(100% + 0.5rem);
+  inset-inline-start: 50%;
+  z-index: var(--z-dropdown);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-s);
+  background-color: var(--text);
+  color: var(--bg);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 4px;
+  pointer-events: none;
+  transition: opacity var(--duration), translate var(--duration) var(--ease-out);
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+[data-tooltip].is-tooltip-dismissed::after {
+  opacity: 0;
+}
+
+/* ---------- Table ---------- */
+
+/* position: relative keeps absolutely positioned content (.visually-hidden text) inside
+   the scroll box; without it, that content can widen the whole page on phones */
+.table-wrap {
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+}
+
+/* Inside a card the card already draws the border */
+.card .table-wrap {
+  border: 0;
+}
+
+.table {
+  font-size: var(--text-sm);
+}
+
+.table th,
+.table td {
+  padding: 0.75rem 1rem;
+  border-block-end: 1px solid var(--border);
+  text-align: start;
+  white-space: nowrap;
+}
+
+.table thead th {
+  background-color: var(--surface);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.table tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+.table tbody tr:hover {
+  background-color: var(--surface);
+}
+
+.table-striped tbody tr:nth-child(even) {
+  background-color: var(--surface);
+}
+
+/* Right-align numbers and keep digits the same width so columns line up */
+.table .num {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* .table-stacked: on phones every row becomes a small card, one "label: value" per line.
+   Give each cell its column name: <td data-label="Due">Oct 25</td>.
+   Note: some screen readers stop announcing table structure once rows are not
+   displayed as a table; the labels keep the meaning readable. */
+@media (width < 40rem) {
+  .table-stacked thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .table-stacked tr {
+    display: block;
+    padding-block: var(--space-xs);
+    border-block-end: 1px solid var(--border);
+  }
+
+  .table-stacked tbody tr:last-child {
+    border-block-end: 0;
+  }
+
+  .table-stacked td {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-block: 0.375rem;
+    border: 0;
+    white-space: normal;
+    text-align: end;
+  }
+
+  .table-stacked td[data-label]::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-align: start;
+  }
+}
+
+/* ---------- Avatar ---------- */
+
+/* Size with --size on the avatar, or on .avatar-group to size every avatar in it */
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: var(--size, 2.5rem);
+  block-size: var(--size, 2.5rem);
+  border-radius: 50%;
+  overflow: hidden;
+  /* Each person gets a hue (ui.js derives --hue from the initials); lightness 0.5 keeps
+     white initials at 4.5:1 or more for every hue */
+  background-color: oklch(0.5 0.13 var(--hue, 200));
+  color: #ffffff;
+  font-size: calc(var(--size, 2.5rem) * 0.36);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  object-fit: cover;
+}
+
+.avatar-group {
+  display: flex;
+}
+
+.avatar-group > .avatar {
+  border: 2px solid var(--bg);
+}
+
+.avatar-group > .avatar + .avatar {
+  margin-inline-start: calc(var(--size, 2.5rem) * -0.2);
+}
+
+/* ---------- Breadcrumbs ---------- */
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.breadcrumbs li {
+  margin: 0;
+}
+
+.breadcrumbs li + li::before {
+  content: "/";
+  margin-inline-end: var(--space-xs);
+  color: var(--border-strong);
+}
+
+.breadcrumbs a {
+  color: inherit;
+}
+
+.breadcrumbs [aria-current="page"] {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ---------- Side navigation (dashboards) ---------- */
+
+.sidenav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.sidenav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-m);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.sidenav a:hover {
+  background-color: var(--surface-2);
+  color: var(--text);
+}
+
+.sidenav a[aria-current="page"] {
+  background-color: color-mix(in oklab, var(--primary) 12%, transparent);
+  color: var(--link);
+}
+
+.sidenav-title {
+  margin-block-start: var(--space-m);
+  padding-inline: 0.75rem;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- Stats (dashboards, landing pages) ---------- */
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-trend {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.trend-up { color: var(--success-text); }
+.trend-down { color: var(--danger-text); }
+
+/* ---------- Progress, spinner, skeleton ---------- */
+
+/* <div class="progress" role="progressbar" aria-valuenow="60" aria-valuemin="0"
+        aria-valuemax="100" style="--value: 60%"><span></span></div> */
+.progress {
+  block-size: 0.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--surface-2);
+  overflow: hidden;
+}
+
+.progress > span {
+  display: block;
+  inline-size: var(--value, 0%);
+  block-size: 100%;
+  border-radius: inherit;
+  background-color: var(--primary);
+  transition: inline-size var(--duration-slow) var(--ease-out);
+}
+
+.spinner {
+  --size: 1.5rem;
+  inline-size: var(--size);
+  block-size: var(--size);
+  border: 3px solid color-mix(in oklab, currentColor 20%, transparent);
+  border-block-start-color: currentColor;
+  border-radius: 50%;
+  animation: vwa-spin 0.8s linear infinite;
+}
+
+/* Gray placeholder blocks shown while content loads */
+.skeleton {
+  min-block-size: 1em;
+  border-radius: var(--radius-s);
+  background-image: linear-gradient(90deg, var(--surface-2) 25%, var(--surface) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: vwa-shimmer 1.4s ease-in-out infinite;
+}
+
+/* ---------- Steps ---------- */
+
+/* A numbered circle for "how it works" steps: <span class="step-number">1</span> */
+.step-number {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: var(--size, 2.5rem);
+  block-size: var(--size, 2.5rem);
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  color: var(--link);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+/* Progress through a multi-step form. Mark the current step with aria-current="step"
+   and finished ones with class="is-done".
+   <ol class="stepper">
+     <li class="is-done"><span class="step-number">1</span> <span class="step-label">Team</span></li>
+     <li aria-current="step"><span class="step-number">2</span> <span class="step-label">Members</span></li>
+     <li><span class="step-number">3</span> <span class="step-label">Project</span></li>
+   </ol>
+   On phones only the current step keeps its .step-label visible. */
+.stepper {
+  display: flex;
+  gap: var(--space-s);
+  padding: 0;
+  list-style: none;
+}
+
+.stepper li {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* The line that joins one step to the next */
+.stepper li:not(:last-child)::after {
+  content: "";
+  flex: 1;
+  min-inline-size: var(--space-m);
+  block-size: 2px;
+  border-radius: var(--radius-full);
+  background-color: var(--border);
+}
+
+.stepper .step-number {
+  --size: 2rem;
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.stepper [aria-current="step"] {
+  color: var(--text);
+}
+
+.stepper [aria-current="step"] .step-number {
+  border-color: var(--primary);
+  color: var(--link);
+}
+
+.stepper .is-done .step-number {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.stepper .is-done::after {
+  background-color: var(--primary);
+}
+
+/* On phones only the numbers and the current step's name stay visible */
+@media (width < 40rem) {
+  .stepper li:not([aria-current="step"]) .step-label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+/* ---------- Pagination ---------- */
+/* <nav class="pagination" aria-label="Pages">
+     <a href="#" aria-label="Previous page">...</a>
+     <a href="#" aria-current="page">1</a> <a href="#">2</a>
+   </nav>  Buttons work too. */
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.pagination > :is(a, button) {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding-inline: var(--space-xs);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  background-color: var(--bg);
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pagination > :is(a, button):hover {
+  background-color: var(--surface-2);
+}
+
+.pagination > [aria-current="page"] {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.pagination > :is([aria-disabled="true"], :disabled) {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---------- Rating ---------- */
+/* <span class="rating" role="img" aria-label="4 out of 5 stars">
+     <i data-icon="star" class="is-filled"></i> ... </span> */
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--rating);
+}
+
+.rating .is-filled {
+  fill: currentColor;
+}
+
+/* ---------- File drop zone ---------- */
+/* A big clickable area around a file input, for uploads with a preview.
+   <label class="dropzone"><input type="file" accept="image/*"> ...text... </label> */
+
+.dropzone {
+  display: grid;
+  place-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xl) var(--space-l);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-l);
+  color: var(--text-muted);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--duration), background-color var(--duration);
+  --icon-size: 2rem;
+}
+
+.dropzone:hover,
+.dropzone.is-dragover {
+  border-color: var(--primary);
+  background-color: color-mix(in oklab, var(--primary) 6%, transparent);
+}
+
+.dropzone:has(:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.dropzone input[type="file"] {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* ---------- Empty state ---------- */
+/* Shown when a list has no items yet. Say why it is empty and what to do next. */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-s);
+  padding: var(--space-2xl) var(--space-l);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-l);
+  color: var(--text-muted);
+  text-align: center;
+  --icon-size: 2.5rem;
+}
+
+.empty-state :is(h2, h3, h4) {
+  color: var(--text);
+  font-size: var(--text-lg);
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  padding-block: var(--space-2xl);
+  border-block-start: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.footer .navbar-brand {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.footer-title {
+  margin-block-end: var(--space-s);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+/* ---------- Keyframes used by the components above ---------- */
+
+@keyframes vwa-spin {
+  to { rotate: 360deg; }
+}
+
+@keyframes vwa-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes vwa-zoom-in {
+  from { opacity: 0; scale: 0.95; }
+}
+
+@keyframes vwa-slide-in-right {
+  from { translate: 100% 0; }
+}
+
+@keyframes vwa-shimmer {
+  to { background-position: -200% 0; }
+}
+
+@keyframes vwa-toast-in {
+  from { opacity: 0; translate: 0 1rem; scale: 0.96; }
+}
+
+@keyframes vwa-toast-out {
+  to { opacity: 0; translate: 100% 0; }
+}

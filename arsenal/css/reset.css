@@ -1,0 +1,112 @@
+/*
+  RESET
+  Removes differences between browsers and sets saner defaults.
+  You should not need to change anything here.
+*/
+
+/* An element's width includes its padding and border. Without this,
+   width: 100% plus padding overflows the parent. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Media never overflows its container */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+/* Form controls inherit the page font (otherwise they use a smaller system font) */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Very long words (URLs) break instead of overflowing the page */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* Balanced headings, and paragraphs without a single word on the last line */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Lists with role="list" are layout lists (menus, card grids), so no bullets */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+  padding: 0;
+}
+
+/* The hidden attribute always hides, even when a class sets display: flex */
+[hidden]:not([hidden="until-found"]) {
+  display: none !important;
+}
+
+/* Respect people who asked the operating system for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* A spinner that stops looks like a frozen page, so loading indicators keep turning, slower */
+  .spinner,
+  .btn[aria-busy="true"]::before {
+    animation-duration: 1.5s !important;
+    animation-iteration-count: infinite !important;
+  }
+}

@@ -1,0 +1,306 @@
+/*
+  LAYOUT PRIMITIVES
+  Small layout classes you combine to build any page. Each one solves one problem.
+  Most are configured with a custom property, so you never need a new class:
+
+    <div class="cluster" style="--gap: var(--space-xl)">...</div>
+
+  Ways to make columns, from simplest to most specific:
+    .auto-grid     as many columns as fit (cards, galleries)
+    .cols-3        a fixed number of columns that drops on small screens
+    .with-sidebar  one fixed-width column next to one flexible column
+
+  Ideas from Every Layout (every-layout.dev) and the CSS-Tricks flexbox and grid guides.
+  Fixed breakpoints used in this file: 40rem (640px), 48rem (768px), 64rem (1024px).
+*/
+
+/* These settings apply only to the element that sets them. Without inherits: false,
+   a --gap set on an outer .stack would leak into every .cluster nested inside it. */
+@property --gap { syntax: "*"; inherits: false; }
+@property --align { syntax: "*"; inherits: false; }
+@property --justify { syntax: "*"; inherits: false; }
+@property --min { syntax: "*"; inherits: false; }
+@property --fill { syntax: "*"; inherits: false; }
+@property --ratio { syntax: "*"; inherits: false; }
+@property --min-height { syntax: "*"; inherits: false; }
+@property --container { syntax: "*"; inherits: false; }
+@property --section-space { syntax: "*"; inherits: false; }
+
+/* ---------- Page width ---------- */
+
+/* .container: centers content and caps its width.
+   min() picks the smaller value: full width minus gutters on phones, --container on large screens. */
+.container {
+  width: min(100% - 2 * var(--gutter), var(--container, var(--content-width)));
+  margin-inline: auto;
+}
+
+.container-narrow {
+  --container: 48rem;
+}
+
+.container-wide {
+  --container: 90rem;
+}
+
+/* .content-grid: a container where any direct child can break out to full width.
+   Children sit in the center column; add .full-bleed or .breakout to a child to widen it.
+   Named grid lines ([full-start], [content-start]) let children pick a column by name. */
+.content-grid {
+  --content-pad: var(--gutter);
+  --breakout-size: 6rem;
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--content-pad), 1fr)
+    [breakout-start] minmax(0, var(--breakout-size))
+    [content-start] min(100% - 2 * var(--content-pad), var(--content-width)) [content-end]
+    minmax(0, var(--breakout-size)) [breakout-end]
+    minmax(var(--content-pad), 1fr) [full-end];
+}
+
+.content-grid > * {
+  grid-column: content;
+}
+
+.content-grid > .breakout {
+  grid-column: breakout;
+}
+
+.content-grid > .full-bleed {
+  grid-column: full;
+}
+
+/* .section: vertical breathing room between page sections.
+   64px on phones, growing to 96px on wide screens. Set --section-space to override. */
+.section {
+  padding-block: var(--section-space, clamp(var(--space-2xl), 8vw, var(--space-4xl)));
+}
+
+/* ---------- Flexbox primitives ---------- */
+
+/* .stack: children one under another with equal space between them.
+   flex-direction: column turns the main axis vertical; gap adds the space. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap, var(--space-m));
+}
+
+/* .push-down inside any flex column (.stack, .card-body) sticks itself and everything after it
+   to the bottom: card buttons, sidebar footers. margin-block-start: auto takes all free space above. */
+.push-down {
+  margin-block-start: auto;
+}
+
+/* .cluster: items in a row that wrap to the next line when they run out of room.
+   Use it for tags, buttons, nav links, social icons. */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: var(--align, center);
+  justify-content: var(--justify, flex-start);
+  gap: var(--gap, var(--space-s));
+}
+
+/* .split: first item on the left, last item on the right (logo and menu, title and button).
+   justify-content: space-between puts all free space between the items. */
+.split {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: var(--align, center);
+  justify-content: space-between;
+  gap: var(--gap, var(--space-m));
+}
+
+/* .push-right inside any flex row pushes itself and everything after it to the right */
+.push-right {
+  margin-inline-start: auto;
+}
+
+/* .with-sidebar: a fixed-width side column next to a content column that takes the rest.
+   When there is not enough room, the two wrap one under another, without a media query.
+   The sidebar wants --sidebar-width; the content grows 999 times faster and wraps
+   once it would be narrower than --content-min. Put class="sidebar-right" to swap sides. */
+.with-sidebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap, var(--space-l));
+}
+
+.with-sidebar > :first-child {
+  flex-basis: var(--sidebar-width, 16rem);
+  flex-grow: 1;
+}
+
+.with-sidebar > :last-child {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: var(--content-min, 55%);
+}
+
+.with-sidebar.sidebar-right > :first-child {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: var(--content-min, 55%);
+}
+
+.with-sidebar.sidebar-right > :last-child {
+  flex-basis: var(--sidebar-width, 16rem);
+  flex-grow: 1;
+  min-inline-size: auto;
+}
+
+/* .reel: a horizontal scrolling row (simple carousel, logos, screenshots) */
+.reel {
+  display: flex;
+  gap: var(--gap, var(--space-m));
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding-block-end: var(--space-s);
+}
+
+.reel > * {
+  flex: 0 0 var(--item-width, min(80%, 20rem));
+  scroll-snap-align: start;
+}
+
+/* .cover: a block at least --min-height tall with its .cover-main child centered
+   vertically. Use it for heroes and splash screens. */
+.cover {
+  display: flex;
+  flex-direction: column;
+  min-block-size: var(--min-height, 100dvh);
+  padding: var(--space-m);
+}
+
+.cover > * {
+  margin-block: var(--space-m);
+}
+
+.cover > :first-child:not(.cover-main) {
+  margin-block-start: 0;
+}
+
+.cover > :last-child:not(.cover-main) {
+  margin-block-end: 0;
+}
+
+.cover > .cover-main {
+  margin-block: auto;
+}
+
+/* ---------- Grid primitives ---------- */
+
+/* .auto-grid: as many columns as fit, each at least --min wide. Zero media queries.
+   auto-fit + minmax() is the most useful line of CSS grid you will write.
+   min(--min, 100%) keeps a column from overflowing on screens narrower than --min. */
+.auto-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--fill, auto-fit), minmax(min(var(--min, 16rem), 100%), 1fr));
+  gap: var(--gap, var(--space-l));
+}
+
+/* .cols-2, .cols-3, .cols-4, .cols-6, .cols-12: a fixed number of equal columns on large
+   screens, fewer on small ones (see the media queries below). One class does it all:
+   <div class="cols-3">...</div>. Add .span-* to a child to make it wider. */
+:is(.cols-2, .cols-3, .cols-4, .cols-6, .cols-12) {
+  display: grid;
+  gap: var(--gap, var(--space-l));
+}
+
+.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-6 { grid-column: span 6; }
+.span-8 { grid-column: span 8; }
+.span-full { grid-column: 1 / -1; }
+
+/* When the column count drops, spans wider than the new count would create extra
+   columns, so they become full width instead */
+@media (width < 64rem) {
+  .cols-4,
+  .cols-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols-12 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  :is(.cols-4, .cols-6) > :is(.span-3, .span-4, .span-6, .span-8) { grid-column: 1 / -1; }
+  .cols-12 > .span-8 { grid-column: span 6; }
+}
+
+@media (width < 48rem) {
+  .cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols-3 > .span-3 { grid-column: 1 / -1; }
+}
+
+@media (width < 40rem) {
+  .cols-2,
+  .cols-3,
+  .cols-4,
+  .cols-6,
+  .cols-12 { grid-template-columns: minmax(0, 1fr); }
+
+  [class*="cols-"] > [class*="span-"] { grid-column: 1 / -1; }
+}
+
+/* .place-center: centers its child on both axes. The shortest centering in CSS. */
+.place-center {
+  display: grid;
+  place-items: center;
+}
+
+/* .frame: a box with a fixed aspect ratio; images and videos inside are cropped to fill it */
+.frame {
+  aspect-ratio: var(--ratio, 16 / 9);
+  overflow: hidden;
+}
+
+.frame > img,
+.frame > video,
+.frame > iframe {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Page shells ---------- */
+
+/* .page: header on top, footer at the bottom even when the content is short.
+   grid-template-rows: auto 1fr auto gives all the leftover height to <main>. */
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* without it, one long word or nowrap line widens the whole page */
+  grid-template-rows: auto 1fr auto;
+  min-block-size: 100dvh;
+}
+
+/* .app-shell: dashboard layout. Sidebar on the left, top bar and content on the right.
+   Below 48rem the sidebar goes on top. Children: .app-sidebar, .app-header, .app-main. */
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width, 16rem) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+  min-block-size: 100dvh;
+}
+
+.app-sidebar { grid-area: sidebar; }
+.app-header { grid-area: header; }
+.app-main { grid-area: main; min-inline-size: 0; }
+
+@media (width < 48rem) {
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      "header"
+      "sidebar"
+      "main";
+  }
+}

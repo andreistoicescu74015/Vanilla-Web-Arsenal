@@ -1,0 +1,168 @@
+/*
+  TOKENS (design variables)
+  Every base value of the site lives here: colors, spacing, fonts, radii, shadows.
+  To change how the whole site looks, change values here, not inside components.
+
+  light-dark(A, B): A is used in the light theme, B in the dark theme.
+  The theme follows the operating system setting. data-theme="light" or "dark"
+  on <html> forces one (see the [data-theme-toggle] button in ui.js).
+
+  Presets: <html data-preset="indigo"> (or forest, editorial, candy) switches the
+  brand colors, corner radii and heading font in one attribute. See the end of this file.
+*/
+
+:root {
+  color-scheme: light dark;
+
+  /* Brand: change these two colors and everything else adapts */
+  --brand: #0f766e;
+  --accent: #7c3aed;
+
+  /* Surfaces and text */
+  --bg: light-dark(#ffffff, #0f1115);
+  --surface: light-dark(#f6f7f9, #171a21);
+  --surface-2: light-dark(#eceef2, #20242d);
+  --text: light-dark(#14161a, #e8eaee);
+  --text-muted: light-dark(#5b616e, #9aa1ad);
+  --border: light-dark(#dcdfe5, #2c313c);
+  /* Input borders and other edges that identify a control: at least 3:1 against the background */
+  --border-strong: light-dark(#868c98, #6b7280);
+
+  /* Action colors. --primary stays the same in both themes so white text on it keeps
+     the contrast you checked once. Text-colored uses go through --link, which is lighter
+     in the dark theme. */
+  --primary: var(--brand);
+  --primary-hover: color-mix(in oklab, var(--primary), black 15%);
+  --on-primary: #ffffff;
+  --link: light-dark(var(--brand), color-mix(in oklab, var(--brand), white 45%));
+  --focus: light-dark(var(--brand), color-mix(in oklab, var(--brand), white 45%));
+
+  /* Status colors. The plain variants have good contrast with white text
+     (solid buttons, solid badges). The -text variants have good contrast
+     as text on the page background, in both themes. */
+  --success: #15803d;
+  --warning: #b45309;
+  --danger: #b91c1c;
+  --info: #0369a1;
+  --success-text: light-dark(#166534, #4ade80);
+  --warning-text: light-dark(#92400e, #fbbf24);
+  --danger-text: light-dark(#991b1b, #f87171);
+  --info-text: light-dark(#075985, #38bdf8);
+  --rating: light-dark(#d97706, #fbbf24); /* rating stars: 3:1 on the background */
+
+  /* Fonts. Body text uses system fonts, which load instantly. Headings use Space Grotesk,
+     embedded in fonts.css so it also works offline. */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Space Grotesk", var(--font-sans);
+  --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+
+  /* Type scale. Large headings use clamp(min, preferred, max):
+     they grow with the screen but stay inside the limits. */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --text-3xl: clamp(1.875rem, 1.4rem + 2vw, 2.75rem);
+  --text-4xl: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
+
+  --leading-tight: 1.15;
+  --leading-normal: 1.6;
+
+  /* Spacing scale (multiples of 4px). Use these for padding, margin and gap
+     so distances stay consistent across the page. */
+  --space-2xs: 0.25rem; /*  4px */
+  --space-xs: 0.5rem;   /*  8px */
+  --space-s: 0.75rem;   /* 12px */
+  --space-m: 1rem;      /* 16px */
+  --space-l: 1.5rem;    /* 24px */
+  --space-xl: 2rem;     /* 32px */
+  --space-2xl: 3rem;    /* 48px */
+  --space-3xl: 4rem;    /* 64px */
+  --space-4xl: 6rem;    /* 96px */
+
+  /* Widths */
+  --content-width: 72rem;   /* max width of page content */
+  --prose-width: 65ch;      /* max width for long paragraphs, easy to read */
+  --gutter: var(--space-m); /* minimum space from the screen edge */
+
+  /* Corner radii */
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-l: 16px;
+  --radius-full: 999px;
+
+  /* Shadows. On a dark background a faint black shadow disappears, so the dark
+     values are much stronger. */
+  --shadow-s: 0 1px 2px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.5));
+  --shadow-m: 0 4px 12px light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.5)), 0 1px 3px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.4));
+  --shadow-l: 0 12px 32px light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.6)), 0 2px 6px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.4));
+
+  /* Stacking (z-index). One place decides what sits on top of what. */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-toast: 500;
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration: 200ms;
+  --duration-slow: 350ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* ---------- Presets ---------- */
+/* Put one on <html>: <html lang="en" data-preset="forest">. Each brand color carries
+   white text at 4.5:1 or more. Fonts other than Space Grotesk are system fonts, so a
+   preset never needs a download. */
+
+/* Classic product look: indigo and pink, system headings */
+[data-preset="indigo"] {
+  --brand: #4f46e5;
+  --accent: #db2777;
+  --font-heading: var(--font-sans);
+}
+
+/* Friendly and calm: green and amber, softer corners, rounded headings where available */
+[data-preset="forest"] {
+  --brand: #15803d;
+  --accent: #b45309;
+  --radius-s: 6px;
+  --radius-m: 12px;
+  --radius-l: 20px;
+  --font-heading: ui-rounded, "SF Pro Rounded", var(--font-sans);
+}
+
+/* Serious and readable: ink and red, sharp corners, serif headings.
+   The brand is nearly black, so in the dark theme buttons and links turn light. */
+[data-preset="editorial"] {
+  --brand: #1c1917;
+  --accent: #b91c1c;
+  --primary: light-dark(#1c1917, #f5f5f4);
+  --on-primary: light-dark(#ffffff, #1c1917);
+  --link: light-dark(#1c1917, #e7e5e4);
+  --focus: light-dark(#1c1917, #e7e5e4);
+  --radius-s: 2px;
+  --radius-m: 3px;
+  --radius-l: 4px;
+  --font-heading: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+/* Playful: violet and pink, round corners, rounded headings where available */
+[data-preset="candy"] {
+  --brand: #6d28d9;
+  --accent: #be185d;
+  --radius-s: 8px;
+  --radius-m: 14px;
+  --radius-l: 24px;
+  --font-heading: ui-rounded, "SF Pro Rounded", var(--font-sans);
+}
