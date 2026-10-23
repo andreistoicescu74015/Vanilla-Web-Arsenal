@@ -1,0 +1,214 @@
+/*
+  Styles for this repo's own documentation pages (index.html, catalog/, tools/).
+  You do not need this file in your project.
+
+  The rules sit in the arsenal's components layer, so utility classes (.p-0, .mt-l, ...)
+  can still override them.
+*/
+
+@layer components {
+  .docs-layout {
+    --sidebar-width: 15rem;
+    --content-min: 60%;
+    padding-block: var(--space-xl);
+  }
+
+  .docs-sidebar {
+    position: sticky;
+    top: 5rem;
+    align-self: start;
+    max-block-size: calc(100dvh - 6rem);
+    overflow-y: auto;
+  }
+
+  .docs-sidebar .sidenav a {
+    padding-block: 0.3rem;
+    font-size: var(--text-sm);
+  }
+
+  .docs-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    padding-block: var(--space-2xl);
+    border-block-end: 1px solid var(--border);
+  }
+
+  .docs-section > h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .docs-section > h3 {
+    margin-block-start: var(--space-m);
+    font-size: var(--text-lg);
+  }
+
+  .docs-section > p {
+    max-inline-size: var(--prose-width);
+    color: var(--text-muted);
+  }
+
+  /* A live example with its source code underneath */
+  .demo {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    background-color: var(--bg);
+  }
+
+  .demo-preview {
+    padding: var(--space-l);
+  }
+
+  .demo-preview.is-tinted {
+    background-color: var(--surface);
+  }
+
+  .demo-code {
+    position: relative;
+    border-block-start: 1px solid var(--border);
+  }
+
+  .demo-code > summary {
+    padding: var(--space-xs) var(--space-l);
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .demo-code pre {
+    max-block-size: 28rem;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    border-block-start: 1px solid var(--border);
+    font-size: var(--text-sm);
+  }
+
+  .demo-code .copy-code {
+    position: absolute;
+    inset-block-start: 0.25rem;
+    inset-inline-end: 0.5rem;
+  }
+
+  /* Colored boxes that make layout primitives visible */
+  .demo-box {
+    padding: var(--space-s) var(--space-m);
+    border: 1px dashed color-mix(in oklab, var(--primary) 55%, transparent);
+    border-radius: var(--radius-s);
+    background-color: color-mix(in oklab, var(--primary) 12%, transparent);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .demo-box.alt {
+    border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+    background-color: color-mix(in oklab, var(--accent) 12%, transparent);
+  }
+
+  /* Preset switcher in the catalog */
+  .preset-switcher .btn[aria-pressed="true"] {
+    --btn-border: var(--primary);
+    --btn-bg: color-mix(in oklab, var(--primary) 10%, transparent);
+  }
+
+  .preset-dots {
+    display: inline-flex;
+  }
+
+  .preset-dots > span {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+  }
+
+  .preset-dots > span + span {
+    margin-inline-start: -0.3rem;
+  }
+
+  /* Syntax highlighting */
+  .tok-tag { color: light-dark(#0550ae, #79c0ff); }
+  .tok-attr { color: light-dark(#8250df, #d2a8ff); }
+  .tok-string { color: light-dark(#0a3069, #a5d6ff); }
+  .tok-comment { color: var(--text-muted); font-style: italic; }
+
+  /* Color swatches */
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    font-size: var(--text-sm);
+  }
+
+  .swatch-color {
+    block-size: 4rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+  }
+
+  /* Icon gallery */
+  .icon-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+    gap: var(--space-xs);
+  }
+
+  .icon-gallery button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-m) var(--space-xs);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-m);
+    background: none;
+    color: var(--text);
+    font-size: var(--text-xs);
+    --icon-size: 1.5rem;
+  }
+
+  .icon-gallery button:hover {
+    border-color: var(--primary);
+    color: var(--link);
+  }
+
+  /* Tool pages: controls on the left, result on the right */
+  .tool-layout {
+    --sidebar-width: 20rem;
+    --content-min: 55%;
+    --gap: var(--space-xl);
+  }
+
+  .tool-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    padding: var(--space-l);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-l);
+    background-color: var(--surface);
+    align-self: start;
+  }
+
+  .tool-panel h2 {
+    font-size: var(--text-lg);
+  }
+
+  .tool-output {
+    position: relative;
+  }
+
+  .tool-output pre {
+    margin: 0;
+    min-block-size: 6rem;
+    font-size: var(--text-sm);
+  }
+
+  .tool-output .btn {
+    position: absolute;
+    inset-block-start: var(--space-xs);
+    inset-inline-end: var(--space-xs);
+  }
+}

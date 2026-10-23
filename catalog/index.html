@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Component catalog | Vanilla Web Arsenal</title>
+  <meta name="description" content="Every layout primitive, component, utility and effect in Vanilla Web Arsenal, live, with copyable code.">
+  <script>
+    document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";
+    document.documentElement.dataset.preset = localStorage.getItem("vwa-catalog-preset") || "";
+  </script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <link rel="stylesheet" href="../assets/docs.css">
+  <!-- docs.js reads the demo HTML before icons.js and ui.js change it, so it loads first -->
+  <script defer src="../assets/docs.js"></script>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/sample-data.js"></script>
+  <script defer src="../arsenal/js/charts.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="catalog.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a class="navbar-brand" href="../index.html"><i data-icon="layers" class="text-brand"></i> Vanilla Web Arsenal</a>
+      <nav class="navbar-links" id="site-nav" aria-label="Main">
+        <a href="index.html" aria-current="page">Catalog</a>
+        <a href="../index.html#templates">Templates</a>
+        <a href="../index.html#tools">Tools</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container with-sidebar docs-layout">
+    <aside class="docs-sidebar hide-mobile" aria-label="Sections">
+      <nav class="sidenav">
+        <p class="sidenav-title">Foundations</p>
+        <a href="#setup">Setup</a>
+        <a href="#themes">Themes and presets</a>
+        <a href="#colors">Colors</a>
+        <a href="#typography">Typography</a>
+        <p class="sidenav-title">Layout</p>
+        <a href="#stack">Stack</a>
+        <a href="#cluster">Cluster and split</a>
+        <a href="#sidebar">With sidebar</a>
+        <a href="#grids">Grids</a>
+        <a href="#reel">Reel</a>
+        <a href="#cover">Cover, frame, center</a>
+        <p class="sidenav-title">Components</p>
+        <a href="#buttons">Buttons</a>
+        <a href="#badges">Badges and alerts</a>
+        <a href="#cards">Cards</a>
+        <a href="#forms">Forms</a>
+        <a href="#segmented">Segmented control</a>
+        <a href="#steps">Steps and multi-step forms</a>
+        <a href="#navbar">Navbar</a>
+        <a href="#modal">Modal and drawer</a>
+        <a href="#tabs">Tabs</a>
+        <a href="#accordion">Accordion</a>
+        <a href="#dropdown">Dropdown and tooltip</a>
+        <a href="#toast">Toast</a>
+        <a href="#table">Table</a>
+        <a href="#pagination">Pagination</a>
+        <a href="#misc">Avatars, rating, breadcrumbs</a>
+        <a href="#upload">File upload</a>
+        <a href="#loading">Loading states</a>
+        <a href="#empty">Empty state</a>
+        <a href="#charts">Charts</a>
+        <a href="#icons">Icons</a>
+        <p class="sidenav-title">Effects</p>
+        <a href="#blocks">Colored blocks</a>
+        <a href="#effects">Backgrounds and glass</a>
+        <a href="#motion">Motion</a>
+      </nav>
+    </aside>
+
+    <main id="main">
+      <header class="stack" style="--gap: var(--space-s)">
+        <span class="eyebrow"><i data-icon="grid"></i> Component catalog</span>
+        <h1>Everything in the arsenal</h1>
+        <p class="lead">Each example is live. Open "Show code" under it, copy the markup into your page, and change the text. Switch the theme in the top bar to check dark mode, and try a preset below.</p>
+      </header>
+
+      <!-- ============ FOUNDATIONS ============ -->
+
+      <section class="docs-section" id="setup">
+        <h2>Setup</h2>
+        <p>Link one stylesheet and the scripts you need. The scripts are plain files, so the page also works when you double-click it and it opens from disk.</p>
+        <pre><code>&lt;link rel="stylesheet" href="arsenal/css/arsenal.css"&gt;
+&lt;link rel="stylesheet" href="css/style.css"&gt;  &lt;!-- your own CSS, always wins --&gt;
+
+&lt;script defer src="arsenal/js/dom.js"&gt;&lt;/script&gt;
+&lt;script defer src="arsenal/js/utils.js"&gt;&lt;/script&gt;
+&lt;script defer src="arsenal/js/icons.js"&gt;&lt;/script&gt;
+&lt;script defer src="arsenal/js/ui.js"&gt;&lt;/script&gt;
+&lt;script defer src="js/main.js"&gt;&lt;/script&gt;</code></pre>
+        <p>One rule to remember: classes are looks, <code>data-*</code> attributes are behavior. <code>class="tabs"</code> styles a set of tabs; <code>data-tabs</code> makes them switch.</p>
+      </section>
+
+      <section class="docs-section" id="themes">
+        <h2>Themes and presets</h2>
+        <p>One attribute on <code>&lt;html&gt;</code> changes the brand colors, the corner radii and the heading font together. Pick one here and the whole catalog follows; the choice is remembered on this page.</p>
+        <div class="cluster preset-switcher" style="--gap: var(--space-xs)" role="group" aria-label="Preview a preset">
+          <button class="btn btn-outline btn-sm" type="button" data-set-preset="" aria-pressed="false"><span class="preset-dots" aria-hidden="true"><span style="background: #0f766e"></span><span style="background: #7c3aed"></span></span> Default</button>
+          <button class="btn btn-outline btn-sm" type="button" data-set-preset="indigo" aria-pressed="false"><span class="preset-dots" aria-hidden="true"><span style="background: #4f46e5"></span><span style="background: #db2777"></span></span> Indigo</button>
+          <button class="btn btn-outline btn-sm" type="button" data-set-preset="forest" aria-pressed="false"><span class="preset-dots" aria-hidden="true"><span style="background: #15803d"></span><span style="background: #b45309"></span></span> Forest</button>
+          <button class="btn btn-outline btn-sm" type="button" data-set-preset="editorial" aria-pressed="false"><span class="preset-dots" aria-hidden="true"><span style="background: #1c1917"></span><span style="background: #b91c1c"></span></span> Editorial</button>
+          <button class="btn btn-outline btn-sm" type="button" data-set-preset="candy" aria-pressed="false"><span class="preset-dots" aria-hidden="true"><span style="background: #6d28d9"></span><span style="background: #be185d"></span></span> Candy</button>
+        </div>
+        <pre><code>&lt;!-- In every page of your project --&gt;
+&lt;html lang="en" data-preset="forest"&gt;</code></pre>
+        <p>The default theme needs no attribute. Headings use Space Grotesk, which is embedded in <code>arsenal/css/fonts.css</code> and works offline; the presets switch to system fonts (serif for Editorial, rounded where available for Forest and Candy). For your own colors, use <a href="../tools/theme.html">the theme builder</a>: it checks the contrast and writes the code.</p>
+      </section>
+
+      <section class="docs-section" id="colors">
+        <h2>Colors</h2>
+        <p>All colors are custom properties in <code>arsenal/css/tokens.css</code>. Change <code>--brand</code> and <code>--accent</code> to rebrand everything, or pick a preset above.</p>
+        <div class="auto-grid" style="--min: 8rem; --gap: var(--space-m)">
+          <div class="swatch"><div class="swatch-color" style="background: var(--brand)"></div><code>--brand</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--accent)"></div><code>--accent</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--bg)"></div><code>--bg</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--surface)"></div><code>--surface</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--surface-2)"></div><code>--surface-2</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--border)"></div><code>--border</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--border-strong)"></div><code>--border-strong</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--text-muted)"></div><code>--text-muted</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--text)"></div><code>--text</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--success)"></div><code>--success</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--warning)"></div><code>--warning</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--danger)"></div><code>--danger</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--info)"></div><code>--info</code></div>
+          <div class="swatch"><div class="swatch-color" style="background: var(--rating)"></div><code>--rating</code></div>
+        </div>
+        <p><code>--border-strong</code> outlines inputs and other controls, so it keeps 3:1 against the background. <code>--rating</code> colors stars.</p>
+      </section>
+
+      <section class="docs-section" id="typography">
+        <h2>Typography</h2>
+        <p>Headings use <code>--font-heading</code> and scale with the screen through <code>clamp()</code>. Body text uses the system font. Plain HTML elements are styled without classes.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <h1>Heading 1</h1>
+            <h2>Heading 2</h2>
+            <h3>Heading 3</h3>
+            <h4>Heading 4</h4>
+            <p class="lead">A lead paragraph introduces a page or section in one or two sentences.</p>
+            <p>Body text with a <a href="#typography">link</a>, <strong>strong text</strong>, <code>inline code</code> and a key: <kbd>Ctrl</kbd> + <kbd>K</kbd>.</p>
+            <p><span class="eyebrow">Eyebrow label</span></p>
+            <blockquote>Good design is as little design as possible.</blockquote>
+          </div>
+        </div>
+
+        <h3>Section headers</h3>
+        <p>A title block for a page section. Centered is the default; <code>.section-header-start</code> aligns it to the start, so a long page does not repeat the same centered rhythm in every section. Keep the eyebrow label for the hero only.</p>
+        <div class="demo">
+          <div class="demo-preview stack" style="--gap: var(--space-2xl)">
+            <div class="section-header m-0">
+              <h2>Everything a team needs</h2>
+              <p class="lead">Six tools that replace the spreadsheet and the group chat.</p>
+            </div>
+            <div class="section-header section-header-start m-0">
+              <h2>Questions, answered</h2>
+              <p class="lead">Something else? Write to us and a person replies within a day.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ LAYOUT ============ -->
+
+      <section class="docs-section" id="stack">
+        <h2>Stack</h2>
+        <p>Children one under another with the same space between them. Change the space with <code>--gap</code>. A child with <code>.push-down</code> sticks to the bottom when the stack is taller than its content.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="stack" style="--gap: var(--space-s)">
+              <div class="demo-box">.stack child</div>
+              <div class="demo-box">.stack child</div>
+              <div class="demo-box">.stack child</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="cluster">
+        <h2>Cluster and split</h2>
+        <p><code>.cluster</code> puts items in a row and wraps them when space runs out: tags, buttons, links. <code>.split</code> pushes the first and last item to opposite ends. <code>.push-right</code> on any flex child moves it and everything after it to the right.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="cluster">
+              <div class="demo-box">HTML</div>
+              <div class="demo-box">CSS</div>
+              <div class="demo-box">JavaScript</div>
+              <div class="demo-box">Accessibility</div>
+              <div class="demo-box">Flexbox</div>
+              <div class="demo-box">Grid</div>
+            </div>
+            <div class="split">
+              <div class="demo-box alt">Logo</div>
+              <div class="cluster">
+                <div class="demo-box">Link</div>
+                <div class="demo-box">Link</div>
+                <div class="demo-box">Link</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-s">
+              <div class="demo-box">Logo</div>
+              <div class="demo-box">Link</div>
+              <div class="demo-box alt push-right">.push-right</div>
+              <div class="demo-box">Button</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="sidebar">
+        <h2>With sidebar</h2>
+        <p>A side column with a set width and a content column that takes the rest. When the content column would get narrower than <code>--content-min</code> (55% by default), the two stack. No media query involved: resize the window to see it.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="with-sidebar" style="--sidebar-width: 12rem">
+              <div class="demo-box alt">Sidebar, 12rem</div>
+              <div class="demo-box">Content takes the remaining space</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="grids">
+        <h2>Grids</h2>
+        <p>Two ways to make columns. <code>.auto-grid</code> fits as many columns as possible, each at least <code>--min</code> wide: use it for cards and galleries. <code>.cols-2</code>, <code>.cols-3</code>, <code>.cols-4</code>, <code>.cols-6</code> and <code>.cols-12</code> give a fixed number of columns that drops on small screens; one class does it all. <code>.span-*</code> makes an item wider.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="auto-grid" style="--min: 9rem; --gap: var(--space-s)">
+              <div class="demo-box">auto</div>
+              <div class="demo-box">auto</div>
+              <div class="demo-box">auto</div>
+              <div class="demo-box">auto</div>
+              <div class="demo-box">auto</div>
+              <div class="demo-box">auto</div>
+            </div>
+            <div class="cols-4" style="--gap: var(--space-s)">
+              <div class="demo-box alt span-2">.span-2</div>
+              <div class="demo-box">1</div>
+              <div class="demo-box">1</div>
+              <div class="demo-box">1</div>
+              <div class="demo-box alt span-3">.span-3</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="reel">
+        <h2>Reel</h2>
+        <p>A row that scrolls sideways and snaps to each item. A carousel without JavaScript.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="reel" style="--item-width: 14rem">
+              <div class="demo-box place-center" style="min-height: 7rem">Slide 1</div>
+              <div class="demo-box place-center" style="min-height: 7rem">Slide 2</div>
+              <div class="demo-box place-center" style="min-height: 7rem">Slide 3</div>
+              <div class="demo-box place-center" style="min-height: 7rem">Slide 4</div>
+              <div class="demo-box place-center" style="min-height: 7rem">Slide 5</div>
+              <div class="demo-box place-center" style="min-height: 7rem">Slide 6</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="cover">
+        <h2>Cover, frame and center</h2>
+        <p><code>.cover</code> is at least <code>--min-height</code> tall (the whole screen by default) and centers its <code>.cover-main</code> child vertically: use it for heroes. <code>.frame</code> keeps an aspect ratio. <code>.place-center</code> centers on both axes.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="cover bg-surface rounded-l" style="--min-height: 16rem">
+              <div class="demo-box">Top</div>
+              <div class="demo-box alt cover-main text-center">.cover-main is centered</div>
+              <div class="demo-box">Bottom</div>
+            </div>
+            <div class="frame rounded-l" style="--ratio: 21 / 9">
+              <img data-placeholder="21 / 9 frame" width="1260" height="540" alt="">
+            </div>
+            <div class="place-center bg-surface rounded-l" style="min-height: 8rem">
+              <div class="demo-box">.place-center</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ COMPONENTS ============ -->
+
+      <section class="docs-section" id="buttons">
+        <h2>Buttons</h2>
+        <p>Use <code>&lt;button&gt;</code> for actions and <code>&lt;a class="btn"&gt;</code> for navigation. Every button is at least 44px tall, a comfortable touch target. Icon-only buttons need an <code>aria-label</code>. Give each screen one primary button; the gradient button is for the single most important action on a page.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="cluster">
+              <button class="btn btn-primary" type="button">Primary</button>
+              <button class="btn" type="button">Default</button>
+              <button class="btn btn-outline" type="button">Outline</button>
+              <button class="btn btn-ghost" type="button">Ghost</button>
+              <button class="btn btn-danger" type="button">Danger</button>
+              <button class="btn btn-success" type="button">Success</button>
+              <button class="btn btn-gradient" type="button">Gradient</button>
+            </div>
+            <div class="cluster">
+              <button class="btn btn-primary btn-sm" type="button">Small</button>
+              <button class="btn btn-primary" type="button">Medium</button>
+              <button class="btn btn-primary btn-lg" type="button">Large</button>
+              <button class="btn btn-primary btn-pill" type="button">Pill</button>
+            </div>
+            <div class="cluster">
+              <button class="btn btn-primary" type="button"><i data-icon="download"></i> Download</button>
+              <a class="btn btn-outline" href="#buttons">Next step <i data-icon="arrow-right"></i></a>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Settings"><i data-icon="settings"></i></button>
+              <button class="btn btn-ghost btn-icon" type="button" aria-label="Cart, 3 items"><i data-icon="shopping-cart"></i><span class="badge badge-solid" aria-hidden="true">3</span></button>
+              <button class="btn btn-primary" type="button" disabled>Disabled</button>
+              <button class="btn btn-primary" type="button" aria-busy="true">Saving</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="badges">
+        <h2>Badges and alerts</h2>
+        <p>Badges label status in tables and cards. Alerts explain something on the page; pair the color with an icon and a title, because color alone does not reach everyone.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="cluster">
+              <span class="badge">Default</span>
+              <span class="badge badge-primary">New</span>
+              <span class="badge badge-success"><i data-icon="check"></i> Paid</span>
+              <span class="badge badge-warning">Pending</span>
+              <span class="badge badge-danger">Overdue</span>
+              <span class="badge badge-info">Beta</span>
+              <span class="badge badge-solid">12</span>
+            </div>
+            <div class="alert" role="status">
+              <i data-icon="info"></i>
+              <div><p class="alert-title">Heads up</p><p>The submission form closes at 18:00.</p></div>
+            </div>
+            <div class="alert alert-success" role="status">
+              <i data-icon="check-circle"></i>
+              <div><p class="alert-title">Project saved</p><p>Your changes are live.</p></div>
+            </div>
+            <div class="alert alert-warning" role="status">
+              <i data-icon="alert-triangle"></i>
+              <div><p class="alert-title">Almost full</p><p>Only 3 seats left in this workshop.</p></div>
+            </div>
+            <div class="alert alert-danger" role="alert">
+              <i data-icon="alert-circle"></i>
+              <div><p class="alert-title">Payment failed</p><p>Check the card number and try again.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="cards">
+        <h2>Cards</h2>
+        <p>Cards in the same row stretch to the same height, and <code>.card-footer</code> lines up at the bottom. <code>.card-link</code> makes the whole card clickable through one real link, which keeps it accessible; only cards that are links should lift on hover. <code>.card-featured</code> marks the one card in a row that should stand out.</p>
+        <div class="demo">
+          <div class="demo-preview is-tinted">
+            <div class="auto-grid" style="--min: 15rem">
+              <article class="card">
+                <div class="card-body">
+                  <div class="icon-box"><i data-icon="zap"></i></div>
+                  <h3 class="text-lg">Fast by default</h3>
+                  <p class="text-muted">No build step and no framework. The page loads as fast as the files can travel.</p>
+                </div>
+              </article>
+
+              <article class="card card-interactive">
+                <img class="card-media" data-placeholder="Guide" data-hue="200" width="800" height="450" alt="">
+                <div class="card-body">
+                  <span class="badge badge-primary">Guide</span>
+                  <h3 class="text-lg"><a class="card-link" href="#cards">Flexbox in 10 minutes</a></h3>
+                  <p class="text-muted line-clamp-2">The whole card is one link. Hover it, or reach it with the Tab key, to see the lift effect.</p>
+                </div>
+                <div class="card-footer text-sm text-muted"><i data-icon="clock"></i> 10 min read</div>
+              </article>
+
+              <article class="card card-featured">
+                <div class="card-body" style="--gap: var(--space-m)">
+                  <div class="split"><h3 class="text-lg">Pro</h3><span class="badge badge-primary">Popular</span></div>
+                  <p><span class="text-4xl font-bold">€19</span> <span class="text-muted">/ month</span></p>
+                  <ul role="list" class="stack" style="--gap: var(--space-xs)">
+                    <li class="flex items-center gap-xs"><i data-icon="check" class="text-success"></i> Unlimited projects</li>
+                    <li class="flex items-center gap-xs"><i data-icon="check" class="text-success"></i> Team workspace</li>
+                    <li class="flex items-center gap-xs"><i data-icon="check" class="text-success"></i> Priority support</li>
+                  </ul>
+                  <button class="btn btn-primary btn-block push-down" type="button">Start free trial</button>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <h3>Stat cards</h3>
+        <div class="demo">
+          <div class="demo-preview is-tinted">
+            <div class="auto-grid" style="--min: 12rem; --gap: var(--space-m)">
+              <div class="card"><div class="card-body stat">
+                <span class="stat-label">Revenue</span>
+                <span class="stat-value">€48,210</span>
+                <span class="stat-trend trend-up">+12.5% this month</span>
+              </div></div>
+              <div class="card"><div class="card-body stat">
+                <span class="stat-label">Active users</span>
+                <span class="stat-value">3,842</span>
+                <span class="stat-trend trend-up">+4.1% this month</span>
+              </div></div>
+              <div class="card"><div class="card-body stat">
+                <span class="stat-label">Churn</span>
+                <span class="stat-value">2.4%</span>
+                <span class="stat-trend trend-down">+0.3% this month</span>
+              </div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="forms">
+        <h2>Forms</h2>
+        <p>Labels sit above fields and every field has one. Mark the optional fields, not the required ones. With <code>data-validate</code> on the form, errors appear under each field after a submit attempt, written from the field's label ("Full name is required."), and update while the user fixes them. A checkbox without a <code>.field</code> wrapper gets its message right after its label. Try submitting the empty form.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <form class="stack max-w-l" data-validate id="demo-form">
+              <div class="cols-2" style="--gap: var(--space-m)">
+                <div class="field">
+                  <label class="label" for="f-name">Full name</label>
+                  <input class="input" id="f-name" name="name" autocomplete="name" required>
+                </div>
+                <div class="field">
+                  <label class="label" for="f-email">Email</label>
+                  <input class="input" id="f-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+                </div>
+              </div>
+              <div class="cols-2" style="--gap: var(--space-m)">
+                <div class="field">
+                  <label class="label" for="f-password">Password</label>
+                  <input class="input" id="f-password" name="password" type="password" autocomplete="new-password" minlength="8" required aria-describedby="f-password-hint">
+                  <p class="field-hint" id="f-password-hint">At least 8 characters.</p>
+                </div>
+                <div class="field">
+                  <label class="label" for="f-confirm">Confirm password</label>
+                  <input class="input" id="f-confirm" name="confirm" type="password" autocomplete="new-password" data-match="#f-password" data-match-error="Passwords do not match." required>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label" for="f-role">Role</label>
+                <select class="input" id="f-role" name="role" required>
+                  <option value="">Choose a role</option>
+                  <option>Designer</option>
+                  <option>Frontend developer</option>
+                  <option>Backend developer</option>
+                </select>
+              </div>
+              <fieldset class="field">
+                <legend class="label">Team size</legend>
+                <div class="cluster">
+                  <label class="check"><input type="radio" name="size" value="solo" checked> Solo</label>
+                  <label class="check"><input type="radio" name="size" value="2-3"> 2 to 3</label>
+                  <label class="check"><input type="radio" name="size" value="4+"> 4 or more</label>
+                </div>
+              </fieldset>
+              <div class="field">
+                <label class="label" for="f-idea">Your idea (optional)</label>
+                <textarea class="input" id="f-idea" name="idea" placeholder="One or two sentences"></textarea>
+              </div>
+              <label class="switch"><input type="checkbox" role="switch" name="updates" checked> Email me updates</label>
+              <label class="check"><input type="checkbox" name="terms" required> I accept the rules of the hackathon</label>
+              <div class="cluster">
+                <button class="btn btn-primary" type="submit">Register</button>
+                <button class="btn btn-ghost" type="reset">Clear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <h3>Input group</h3>
+        <div class="demo">
+          <div class="demo-preview">
+            <form class="input-group max-w-m" role="search" onsubmit="event.preventDefault()">
+              <input class="input" type="search" placeholder="Search projects" aria-label="Search projects">
+              <button class="btn btn-primary" type="submit"><i data-icon="search"></i> Search</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="segmented">
+        <h2>Segmented control</h2>
+        <p>For choosing one option that filters or switches a view: All, Open, Done; Week, Month. It is a group of native radio buttons, so the arrow keys work and a <code>change</code> event fires without any JavaScript from the arsenal. Use tabs only when each option shows its own panel.</p>
+        <div class="demo">
+          <div class="demo-preview stack" style="--gap: var(--space-s)">
+            <fieldset class="segmented" id="demo-filter">
+              <legend class="visually-hidden">Show tasks</legend>
+              <label><input type="radio" name="demo-filter" value="all" checked> All</label>
+              <label><input type="radio" name="demo-filter" value="open"> Open</label>
+              <label><input type="radio" name="demo-filter" value="done"> Done</label>
+            </fieldset>
+            <p class="text-sm text-muted">Showing: <output id="demo-filter-output">all</output> tasks</p>
+          </div>
+        </div>
+        <pre><code>VWA.on("#demo-filter", "change", (event) =&gt; showTasks(event.target.value));</code></pre>
+      </section>
+
+      <section class="docs-section" id="steps">
+        <h2>Steps and multi-step forms</h2>
+        <p><code>.step-number</code> numbers the steps of a "how it works" section. <code>.stepper</code> shows progress through a form split into steps: mark finished steps with <code>class="is-done"</code> and the current one with <code>aria-current="step"</code>. On phones only the current step keeps its name.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <ol role="list" class="cols-3">
+              <li class="stack" style="--gap: var(--space-xs)">
+                <span class="step-number">1</span>
+                <h3 class="text-lg">Create a board</h3>
+                <p class="text-muted">Start from a template.</p>
+              </li>
+              <li class="stack" style="--gap: var(--space-xs)">
+                <span class="step-number">2</span>
+                <h3 class="text-lg">Invite the team</h3>
+                <p class="text-muted">Share one link.</p>
+              </li>
+              <li class="stack" style="--gap: var(--space-xs)">
+                <span class="step-number">3</span>
+                <h3 class="text-lg">Ship and present</h3>
+                <p class="text-muted">Export the report.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <h3>A form in two steps</h3>
+        <p><code>VWA.validate(element)</code> checks only the fields inside one element, shows their messages and focuses the first invalid one. Call it on the current step before moving to the next. Press "Next" with empty fields.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <form class="stack max-w-l" id="wizard-demo" data-validate>
+              <ol role="list" class="stepper">
+                <li aria-current="step"><span class="step-number">1</span> <span class="step-label">Team</span></li>
+                <li><span class="step-number">2</span> <span class="step-label">Project</span></li>
+                <li><span class="step-number">3</span> <span class="step-label">Done</span></li>
+              </ol>
+              <fieldset class="stack" data-step="1">
+                <legend class="visually-hidden">Team</legend>
+                <div class="field">
+                  <label class="label" for="w-team">Team name</label>
+                  <input class="input" id="w-team" name="team" required minlength="3">
+                </div>
+                <div class="field">
+                  <label class="label" for="w-email">Contact email</label>
+                  <input class="input" id="w-email" name="email" type="email" required>
+                </div>
+                <button class="btn btn-primary self-start" type="button" data-next>Next</button>
+              </fieldset>
+              <fieldset class="stack" data-step="2" hidden>
+                <legend class="visually-hidden">Project</legend>
+                <div class="field">
+                  <label class="label" for="w-idea">One sentence about the idea</label>
+                  <input class="input" id="w-idea" name="idea" required minlength="10">
+                </div>
+                <div class="cluster">
+                  <button class="btn btn-ghost" type="button" data-back>Back</button>
+                  <button class="btn btn-primary" type="submit">Register team</button>
+                </div>
+              </fieldset>
+              <div class="alert alert-success" data-step="3" hidden role="status">
+                <i data-icon="check-circle"></i>
+                <div><p class="alert-title">Team registered</p><p>We sent the details to your contact email.</p></div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="navbar">
+        <h2>Navbar</h2>
+        <p>Sticky, translucent, and collapsing into a menu button below 768px. The brand pushes everything else to the right with <code>margin-inline-start: auto</code>. The menu button needs <code>data-nav-toggle</code>. Make the window narrow to see the mobile menu.</p>
+        <div class="demo">
+          <div class="demo-preview p-0">
+            <header class="navbar">
+              <div class="container navbar-inner">
+                <a class="navbar-brand" href="#navbar"><i data-icon="zap" class="text-brand"></i> Brand</a>
+                <nav class="navbar-links" id="demo-nav" aria-label="Demo">
+                  <a href="#navbar" aria-current="page">Home</a>
+                  <a href="#navbar">Features</a>
+                  <a href="#navbar">Pricing</a>
+                  <a href="#navbar">About</a>
+                </nav>
+                <div class="navbar-actions">
+                  <a class="btn btn-primary btn-sm" href="#navbar">Sign up</a>
+                  <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="demo-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+                </div>
+              </div>
+            </header>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="modal">
+        <h2>Modal and drawer</h2>
+        <p>Built on the native <code>&lt;dialog&gt;</code>: focus is trapped inside, <kbd>Esc</kbd> closes it, and the rest of the page is inert. A click on the backdrop closes it too (add <code>data-static</code> to prevent that). <code>VWA.confirm()</code> replaces <code>window.confirm()</code>.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="cluster">
+              <button class="btn btn-primary" type="button" data-dialog-open="demo-modal">Open modal</button>
+              <button class="btn btn-outline" type="button" data-dialog-open="demo-drawer">Open drawer</button>
+              <button class="btn btn-danger" type="button" onclick="VWA.confirm('This cannot be undone.', { title: 'Delete project?', confirmText: 'Delete', danger: true }).then((ok) => VWA.toast(ok ? 'Project deleted' : 'Nothing changed', { type: ok ? 'success' : 'info' }))">Delete with confirm</button>
+            </div>
+
+            <dialog class="modal" id="demo-modal" aria-labelledby="demo-modal-title">
+              <div class="modal-header">
+                <h2 class="text-xl" id="demo-modal-title">Invite your team</h2>
+                <button class="btn btn-ghost btn-icon btn-sm" type="button" data-dialog-close aria-label="Close"><i data-icon="x"></i></button>
+              </div>
+              <div class="modal-body stack">
+                <p class="text-muted">Teammates get an email with a link to this project.</p>
+                <div class="field">
+                  <label class="label" for="invite-email">Email address</label>
+                  <input class="input" id="invite-email" type="email" placeholder="name@example.com">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-ghost" type="button" data-dialog-close>Cancel</button>
+                <button class="btn btn-primary" type="button" data-dialog-close>Send invite</button>
+              </div>
+            </dialog>
+
+            <dialog class="modal drawer" id="demo-drawer" aria-labelledby="demo-drawer-title">
+              <div class="modal-header">
+                <h2 class="text-xl" id="demo-drawer-title">Your cart</h2>
+                <button class="btn btn-ghost btn-icon btn-sm" type="button" data-dialog-close aria-label="Close"><i data-icon="x"></i></button>
+              </div>
+              <div class="modal-body">
+                <div class="empty-state">
+                  <i data-icon="shopping-cart"></i>
+                  <h3>Your cart is empty</h3>
+                  <p>Add a workshop ticket to see it here.</p>
+                </div>
+              </div>
+            </dialog>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="tabs">
+        <h2>Tabs</h2>
+        <p>Tabs show one panel at a time. <code>class="tabs"</code> is the look, <code>data-tabs</code> the behavior: click a tab, or focus one and use the arrow keys, <kbd>Home</kbd> and <kbd>End</kbd>. Add <code>.pills</code> for a pill-style switch. When the options filter a single view instead of switching panels, use the segmented control above.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="tabs" data-tabs>
+              <div role="tablist" aria-label="Project views">
+                <button role="tab" type="button" id="tab-overview" aria-controls="panel-overview" aria-selected="true">Overview</button>
+                <button role="tab" type="button" id="tab-activity" aria-controls="panel-activity" aria-selected="false">Activity</button>
+                <button role="tab" type="button" id="tab-settings" aria-controls="panel-settings" aria-selected="false">Settings</button>
+              </div>
+              <div role="tabpanel" id="panel-overview" aria-labelledby="tab-overview">The overview panel.</div>
+              <div role="tabpanel" id="panel-activity" aria-labelledby="tab-activity" hidden>The activity panel.</div>
+              <div role="tabpanel" id="panel-settings" aria-labelledby="tab-settings" hidden>The settings panel.</div>
+            </div>
+
+            <div class="tabs pills" data-tabs>
+              <div role="tablist" aria-label="Billing period">
+                <button role="tab" type="button" id="tab-monthly" aria-controls="panel-monthly" aria-selected="true">Monthly</button>
+                <button role="tab" type="button" id="tab-yearly" aria-controls="panel-yearly" aria-selected="false">Yearly</button>
+              </div>
+              <div role="tabpanel" id="panel-monthly" aria-labelledby="tab-monthly">€19 per month.</div>
+              <div role="tabpanel" id="panel-yearly" aria-labelledby="tab-yearly" hidden>€190 per year, two months free.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="accordion">
+        <h2>Accordion</h2>
+        <p>Native <code>&lt;details&gt;</code>, so it works without JavaScript. Items that share a <code>name</code> close each other, and the browser search (<kbd>Ctrl</kbd> + <kbd>F</kbd>) finds text inside closed items.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="max-w-l">
+              <details class="accordion" name="faq" open>
+                <summary>Can we use this at the hackathon?</summary>
+                <div class="accordion-content"><p>Yes. It is plain HTML, CSS and JavaScript that you wrote and prepared before the event.</p></div>
+              </details>
+              <details class="accordion" name="faq">
+                <summary>Does it work offline?</summary>
+                <div class="accordion-content"><p>Yes. The heading font is embedded, body text uses system fonts, and icons are inline SVG, so nothing loads from the internet.</p></div>
+              </details>
+              <details class="accordion" name="faq">
+                <summary>Do we need a build step?</summary>
+                <div class="accordion-content"><p>No. Open the HTML file in a browser and it runs.</p></div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="dropdown">
+        <h2>Dropdown and tooltip</h2>
+        <p>The dropdown is a <code>&lt;details data-dropdown&gt;</code> that closes on outside clicks and <kbd>Esc</kbd>. The tooltip is pure CSS and <kbd>Esc</kbd> hides it; repeat its text in <code>aria-label</code>, because screen readers skip it.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="cluster">
+              <details class="dropdown" data-dropdown>
+                <summary class="btn btn-outline">Options <i data-icon="chevron-down"></i></summary>
+                <div class="dropdown-menu">
+                  <a href="#dropdown"><i data-icon="edit"></i> Edit</a>
+                  <button type="button"><i data-icon="copy"></i> Duplicate</button>
+                  <button type="button"><i data-icon="share"></i> Share</button>
+                  <hr>
+                  <button type="button" class="text-danger"><i data-icon="trash"></i> Delete</button>
+                </div>
+              </details>
+              <button class="btn btn-outline btn-icon" type="button" data-tooltip="Copy link" aria-label="Copy link"><i data-icon="link"></i></button>
+              <button class="btn btn-outline btn-icon" type="button" data-tooltip="Download" aria-label="Download"><i data-icon="download"></i></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="toast">
+        <h2>Toast</h2>
+        <p>Short feedback after an action. Screen readers announce it through an <code>aria-live</code> region. The countdown pauses while the pointer or focus is on the toast, and errors stay until someone dismisses them. An <code>action</code> adds a button such as "Undo", which beats asking "Are you sure?" for actions that are easy to reverse.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="cluster">
+              <button class="btn" type="button" onclick="VWA.toast('Draft saved')">Info</button>
+              <button class="btn" type="button" onclick="VWA.toast('Project published', { type: 'success' })">Success</button>
+              <button class="btn" type="button" onclick="VWA.toast('Storage almost full', { type: 'warning' })">Warning</button>
+              <button class="btn" type="button" onclick="VWA.toast('Could not connect', { type: 'danger' })">Danger (stays)</button>
+              <button class="btn" type="button" onclick="VWA.toast('Note archived', { action: { label: 'Undo', onClick: () => VWA.toast('Note restored', { type: 'success' }) } })">With Undo</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="table">
+        <h2>Table</h2>
+        <p>Wrap tables in <code>.table-wrap</code> so they scroll sideways on phones instead of breaking the layout. Numbers align right in <code>.num</code> cells. With <code>.table-stacked</code> and a <code>data-label</code> on each cell, every row becomes a small card on phones instead: narrow the window to see it.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="table-wrap">
+              <table class="table table-stacked">
+                <thead>
+                  <tr><th scope="col">Team</th><th scope="col">Project</th><th scope="col">Status</th><th scope="col" class="num">Score</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td data-label="Team"><span class="flex items-center gap-xs"><span class="avatar" style="--size: 1.75rem">PX</span> Pixel Pushers</span></td><td data-label="Project">EcoRoute</td><td data-label="Status"><span class="badge badge-success">Submitted</span></td><td data-label="Score" class="num">92.5</td></tr>
+                  <tr><td data-label="Team"><span class="flex items-center gap-xs"><span class="avatar" style="--size: 1.75rem">NB</span> Null Byte</span></td><td data-label="Project">StudyBuddy</td><td data-label="Status"><span class="badge badge-warning">In review</span></td><td data-label="Score" class="num">88.0</td></tr>
+                  <tr><td data-label="Team"><span class="flex items-center gap-xs"><span class="avatar" style="--size: 1.75rem">FX</span> Flexperts</span></td><td data-label="Project">MealPlan</td><td data-label="Status"><span class="badge badge-danger">Late</span></td><td data-label="Score" class="num">71.25</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="pagination">
+        <h2>Pagination</h2>
+        <p>Links (or buttons) in a <code>nav</code>. The current page has <code>aria-current="page"</code>; arrows need an <code>aria-label</code>; a disabled arrow uses <code>aria-disabled="true"</code>.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <nav class="pagination" aria-label="Pages">
+              <a href="#pagination" aria-label="Previous page" aria-disabled="true"><i data-icon="chevron-left"></i></a>
+              <a href="#pagination" aria-current="page">1</a>
+              <a href="#pagination">2</a>
+              <a href="#pagination">3</a>
+              <a href="#pagination">4</a>
+              <a href="#pagination" aria-label="Next page"><i data-icon="chevron-right"></i></a>
+            </nav>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="misc">
+        <h2>Avatars, rating and breadcrumbs</h2>
+        <p>Each avatar gets its own color from its initials, so a row of people does not read as one blob, and the same initials keep the same color on every page. Ratings say their value in <code>aria-label</code>, because the stars are only a picture.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="cluster" style="--gap: var(--space-l)">
+              <span class="avatar">AS</span>
+              <span class="avatar" style="--size: 3.5rem">MR</span>
+              <div class="avatar-group">
+                <span class="avatar">AB</span>
+                <span class="avatar">CD</span>
+                <span class="avatar">EF</span>
+                <span class="avatar" style="background: var(--surface-2); color: var(--text)">+4</span>
+              </div>
+            </div>
+            <div class="cluster">
+              <span class="rating" role="img" aria-label="4 out of 5 stars">
+                <i data-icon="star" class="is-filled"></i><i data-icon="star" class="is-filled"></i><i data-icon="star" class="is-filled"></i><i data-icon="star" class="is-filled"></i><i data-icon="star"></i>
+              </span>
+              <span class="text-sm text-muted">4.0 (128 reviews)</span>
+            </div>
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+              <ol>
+                <li><a href="#misc">Home</a></li>
+                <li><a href="#misc">Projects</a></li>
+                <li><span aria-current="page">Vanilla Web Arsenal</span></li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="upload">
+        <h2>File upload</h2>
+        <p><code>.dropzone</code> is a large label around a file input: click it, reach it with <kbd>Tab</kbd> and press <kbd>Space</kbd>, or drop a file on it. The arsenal styles it; showing a preview takes a few lines of your own script (see <code>catalog/catalog.js</code>).</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="stack max-w-m">
+              <label class="dropzone" id="demo-dropzone">
+                <input type="file" accept="image/*" id="demo-file">
+                <i data-icon="upload"></i>
+                <span><strong class="text-brand">Choose a logo</strong> or drop it here</span>
+                <span class="text-sm">PNG, JPG or SVG</span>
+              </label>
+              <img class="rounded-m self-start" id="demo-file-preview" alt="Preview of the chosen image" hidden style="max-width: 12rem">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="loading">
+        <h2>Loading states</h2>
+        <p>Show a skeleton where content will appear, a spinner for short waits, and a progress bar when you know how far along the task is. Spinners keep turning, slower, for people who ask for reduced motion, so the page never looks frozen.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="progress" role="progressbar" aria-label="Upload" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="--value: 65%"><span></span></div>
+            <div class="cluster">
+              <div class="spinner" role="status" aria-label="Loading"></div>
+              <div class="spinner text-brand" style="--size: 2rem" role="status" aria-label="Loading"></div>
+            </div>
+            <div class="card max-w-m" aria-hidden="true">
+              <div class="card-body">
+                <div class="flex items-center gap-s">
+                  <div class="skeleton avatar"></div>
+                  <div class="stack grow" style="--gap: var(--space-xs)">
+                    <div class="skeleton" style="width: 40%"></div>
+                    <div class="skeleton" style="width: 25%"></div>
+                  </div>
+                </div>
+                <div class="skeleton" style="height: 6rem"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="empty">
+        <h2>Empty state</h2>
+        <p>An empty list says why it is empty and offers the next step.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="empty-state">
+              <i data-icon="folder"></i>
+              <h3>No projects yet</h3>
+              <p>Projects you create appear here.</p>
+              <button class="btn btn-primary" type="button"><i data-icon="plus"></i> New project</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="charts">
+        <h2>Charts</h2>
+        <p><code>arsenal/js/charts.js</code> draws bar, line and donut charts as SVG, in the theme colors. Each chart also writes its numbers into a table that only screen readers see (the donut's legend is that list), and redraws itself when its container changes width.</p>
+        <div class="demo">
+          <div class="demo-preview stack" style="--gap: var(--space-2xl)">
+            <div id="demo-bar-chart"></div>
+            <div id="demo-line-chart"></div>
+            <div id="demo-donut-chart"></div>
+          </div>
+        </div>
+        <pre><code>&lt;script defer src="arsenal/js/charts.js"&gt;&lt;/script&gt;
+
+VWA.chart.bar("#demo-bar-chart", {
+  labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  values: [12, 18, 9, 22, 17, 26, 24],
+  label: "Tasks completed per day",
+  highlight: 5,
+});
+VWA.chart.line("#demo-line-chart", {
+  labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"],
+  series: [{ name: "Visits", values: [120, 180, 150, 240, 300] }, { name: "Sign-ups", values: [20, 35, 30, 60, 90] }],
+  label: "Visits and sign-ups per week",
+});
+VWA.chart.donut("#demo-donut-chart", {
+  segments: [{ label: "Done", value: 8 }, { label: "In progress", value: 3 }, { label: "To do", value: 5 }],
+  label: "Tasks by status",
+  centerLabel: "Tasks",
+});</code></pre>
+      </section>
+
+      <section class="docs-section" id="icons">
+        <h2>Icons</h2>
+        <p>Write <code>&lt;i data-icon="name"&gt;&lt;/i&gt;</code> and icons.js swaps it for an inline SVG that follows the text color. Click an icon to copy its markup.</p>
+        <div class="icon-gallery" id="icon-gallery"></div>
+      </section>
+
+      <!-- ============ EFFECTS ============ -->
+
+      <section class="docs-section" id="blocks">
+        <h2>Colored blocks</h2>
+        <p><code>.bg-primary</code> fills a block with the brand color and turns its text white; muted text and focus rings stay readable on it. Buttons on it use <code>.btn-light</code> and <code>.btn-outline-light</code>. Use it for one call-to-action band per page.</p>
+        <div class="demo">
+          <div class="demo-preview">
+            <div class="bg-primary rounded-l p-2xl stack items-center text-center" style="--gap: var(--space-l)">
+              <h2 class="text-3xl">Ready to ship your next project?</h2>
+              <p class="text-muted">Set up your board in two minutes. Free for student teams.</p>
+              <div class="cluster" style="--justify: center">
+                <a class="btn btn-light btn-lg" href="#blocks">Start for free</a>
+                <a class="btn btn-outline-light btn-lg" href="#blocks">Talk to us</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="effects">
+        <h2>Backgrounds and glass</h2>
+        <p>Decorative layers sit behind the content, so text keeps its contrast. Use the gradient once per page, on the hero heading word or on the one main button; everything else stays solid, which is what makes that one place stand out.</p>
+        <div class="demo">
+          <div class="demo-preview p-0">
+            <div class="bg-aurora place-center p-2xl">
+              <div class="glass rounded-l p-l stack text-center max-w-m" style="--gap: var(--space-s)">
+                <h3>.glass over .bg-aurora</h3>
+                <p class="text-muted">A frosted panel over a soft glow that fades out at the bottom.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-preview">
+            <h2 class="text-3xl">Build it <span class="gradient-text">without frameworks</span></h2>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-preview p-0">
+            <div class="auto-grid" style="--min: 14rem; --gap: 0">
+              <div class="bg-grid place-center p-2xl"><strong>.bg-grid</strong></div>
+              <div class="bg-dots place-center p-2xl"><strong>.bg-dots</strong></div>
+              <div class="bg-gradient place-center p-2xl"><strong>.bg-gradient</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-preview is-tinted">
+            <div class="auto-grid" style="--min: 14rem">
+              <div class="card hover-lift"><div class="card-body"><h3 class="text-lg">.hover-lift</h3><p class="text-muted">Rises on hover. Use it on cards that are links.</p></div></div>
+              <div class="card glow-border"><div class="card-body"><h3 class="text-lg">.glow-border</h3><p class="text-muted">An animated gradient border. At most one per page.</p></div></div>
+              <div class="card spotlight" data-spotlight><div class="card-body"><h3 class="text-lg">.spotlight</h3><p class="text-muted">Move the mouse over this card. Only on devices with a mouse.</p></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="demo-preview is-tinted">
+            <div class="mock-window max-w-l mx-auto">
+              <div class="mock-window-bar"><span></span><span></span><span></span></div>
+              <div class="mock-window-body stack" style="--gap: var(--space-s)">
+                <div class="skeleton" style="width: 35%; height: 1.25rem"></div>
+                <div class="skeleton" style="width: 80%"></div>
+                <div class="skeleton" style="width: 65%"></div>
+                <div class="cols-3" style="--gap: var(--space-s)">
+                  <div class="skeleton" style="height: 4rem"></div>
+                  <div class="skeleton" style="height: 4rem"></div>
+                  <div class="skeleton" style="height: 4rem"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="docs-section" id="motion">
+        <h2>Motion</h2>
+        <p>Entrance animations play once on load; <code>--delay</code> staggers them. <code>data-reveal</code> waits until the element scrolls into view, and <code>data-reveal-group</code> on a parent staggers its children. <code>data-count-to</code> counts up to the number; write the real number in the HTML too, so it is right without JavaScript. <code>data-marquee</code> runs an endless strip and adds a pause button under it. All of it is skipped for people who turned on reduced motion.</p>
+        <div class="demo">
+          <div class="demo-preview stack">
+            <div class="auto-grid" style="--min: 10rem" data-reveal-group>
+              <div class="card" data-reveal><div class="card-body stat"><span class="stat-label">Teams</span><span class="stat-value" data-count-to="128">128</span></div></div>
+              <div class="card" data-reveal><div class="card-body stat"><span class="stat-label">Prize pool</span><span class="stat-value" data-count-to="15000" data-prefix="€">€15,000</span></div></div>
+              <div class="card" data-reveal><div class="card-body stat"><span class="stat-label">Uptime</span><span class="stat-value" data-count-to="99.9" data-suffix="%">99.9%</span></div></div>
+              <div class="card" data-reveal="zoom"><div class="card-body stat"><span class="stat-label">Coffee</span><span class="stat-value" data-count-to="420" data-suffix=" cups">420 cups</span></div></div>
+            </div>
+            <div class="marquee" data-marquee>
+              <div class="marquee-track" style="--speed: 20s">
+                <span class="text-xl font-bold text-muted">HTML</span>
+                <span class="text-xl font-bold text-muted">CSS</span>
+                <span class="text-xl font-bold text-muted">JavaScript</span>
+                <span class="text-xl font-bold text-muted">Flexbox</span>
+                <span class="text-xl font-bold text-muted">Grid</span>
+                <span class="text-xl font-bold text-muted">SVG</span>
+                <span class="text-xl font-bold text-muted">Accessibility</span>
+              </div>
+            </div>
+            <div class="cluster">
+              <span class="badge badge-primary animate-fade-up">fade-up</span>
+              <span class="badge badge-primary animate-fade-up" style="--delay: 150ms">delay 150ms</span>
+              <span class="badge badge-primary animate-fade-up" style="--delay: 300ms">delay 300ms</span>
+              <span class="badge badge-success animate-pulse">pulse</span>
+              <span class="badge badge-info animate-float">float</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="container split">
+      <p>Vanilla Web Arsenal. HTML, CSS and JavaScript, nothing else.</p>
+      <a href="#main">Back to top</a>
+    </div>
+  </footer>
+</body>
+</html>
