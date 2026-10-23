@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contrast checker | Vanilla Web Arsenal</title>
+  <meta name="description" content="Check the WCAG 2.2 contrast ratio of two colors, get a fixed color that passes, and verify the arsenal tokens in the current theme.">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <link rel="stylesheet" href="../assets/docs.css">
+  <style>
+    @layer components {
+      .color-row {
+        display: flex;
+        gap: var(--space-xs);
+      }
+
+      .color-row input[type="color"] {
+        flex-shrink: 0;
+        inline-size: 3rem;
+        block-size: 2.75rem;
+        padding: 3px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-m);
+        background-color: var(--bg);
+        cursor: pointer;
+      }
+
+      .ratio {
+        font-size: var(--text-4xl);
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .check-row {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-s);
+        padding-block: var(--space-s);
+        border-block-end: 1px solid var(--border);
+      }
+
+      .check-row:last-child {
+        border-block-end: 0;
+      }
+
+      .check-row > .badge {
+        flex-shrink: 0;
+        min-inline-size: 4.25rem;
+        justify-content: center;
+        margin-block-start: 0.125rem;
+      }
+
+      .check-row > div {
+        flex: 1;
+        min-inline-size: 0;
+      }
+
+      .sample {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-m);
+        padding: var(--space-l);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-l);
+      }
+
+      .sample-large {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .sample-button {
+        min-block-size: 2.75rem;
+        padding: 0.5rem 1.125rem;
+        border: 0;
+        border-radius: var(--radius-m);
+        font-weight: 600;
+      }
+
+      .sample-input {
+        min-block-size: 2.75rem;
+        padding: 0.5rem 0.75rem;
+        border: 2px solid;
+        border-radius: var(--radius-m);
+        background: transparent;
+        color: inherit;
+      }
+
+      .sample-input::placeholder {
+        color: inherit;
+        opacity: 0.8;
+      }
+
+      .swatch-chip {
+        flex-shrink: 0;
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-m);
+      }
+
+      .token-dot {
+        display: inline-block;
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        border: 1px solid var(--border-strong);
+        border-radius: 50%;
+        vertical-align: -0.125rem;
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="contrast.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container-wide container navbar-inner">
+      <a class="navbar-brand" href="../index.html"><i data-icon="layers" class="text-brand"></i> Vanilla Web Arsenal</a>
+      <nav class="navbar-links" id="site-nav" aria-label="Main">
+        <a href="../catalog/index.html">Catalog</a>
+        <a href="../index.html#templates">Templates</a>
+        <a href="../index.html#tools" aria-current="page">Tools</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container container-wide section" style="--section-space: var(--space-xl)">
+    <header class="stack mb-xl" style="--gap: var(--space-xs)">
+      <span class="eyebrow"><i data-icon="eye"></i> Tool</span>
+      <h1 class="text-3xl">Contrast checker</h1>
+      <p class="lead">Check text and background colors against WCAG 2.2. Any CSS color works: hex, rgb(), hsl(), oklch() or a name like navy.</p>
+    </header>
+
+    <div class="with-sidebar tool-layout">
+      <aside class="tool-panel" aria-label="Colors">
+        <h2>Colors</h2>
+
+        <div class="field">
+          <label class="label" for="fg-text">Text color (foreground)</label>
+          <div class="color-row">
+            <input type="color" id="fg-picker" aria-label="Pick the text color">
+            <input class="input font-mono" id="fg-text" spellcheck="false" autocomplete="off" aria-describedby="fg-error">
+          </div>
+          <p class="field-error" id="fg-error"></p>
+        </div>
+
+        <button class="btn btn-outline btn-sm" type="button" id="swap"><i data-icon="refresh"></i> Swap colors</button>
+
+        <div class="field">
+          <label class="label" for="bg-text">Background color</label>
+          <div class="color-row">
+            <input type="color" id="bg-picker" aria-label="Pick the background color">
+            <input class="input font-mono" id="bg-text" spellcheck="false" autocomplete="off" aria-describedby="bg-error">
+          </div>
+          <p class="field-error" id="bg-error"></p>
+        </div>
+
+        <p class="field-hint">Large text means at least 18pt (about 24px), or 14pt bold (about 18.5px bold). The ratio is never rounded up: 4.499:1 fails 4.5:1.</p>
+      </aside>
+
+      <div class="stack" style="--gap: var(--space-l)">
+        <section class="card" aria-labelledby="ratio-title">
+          <div class="card-body">
+            <h2 class="text-sm text-muted font-semibold" id="ratio-title">Contrast ratio</h2>
+            <p class="ratio" id="ratio" aria-live="polite" aria-atomic="true"></p>
+            <p class="text-muted" id="verdict"></p>
+            <ul role="list" id="checks"></ul>
+          </div>
+        </section>
+
+        <section class="stack" style="--gap: var(--space-s)" aria-labelledby="sample-title">
+          <h2 class="text-lg" id="sample-title">Live sample</h2>
+          <div class="sample" id="sample">
+            <p class="sample-large">Large heading text, 24px bold</p>
+            <p>Normal paragraph text at 16px. Most of a page is text like this, so it needs 4.5:1 to pass.</p>
+            <div class="cluster">
+              <button class="sample-button" type="button" tabindex="-1">Button</button>
+              <input class="sample-input" placeholder="Input with a 2px border" aria-label="Sample input" tabindex="-1">
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="fix-title">
+          <div class="card-body">
+            <div class="split">
+              <h2 class="text-lg" id="fix-title">Suggest a fix</h2>
+              <div class="flex items-center gap-xs">
+                <label class="label" for="target">Target</label>
+                <select class="input" id="target" style="inline-size: auto">
+                  <option value="4.5">AA text, 4.5:1</option>
+                  <option value="3">Large text or UI, 3:1</option>
+                  <option value="7">AAA text, 7:1</option>
+                </select>
+              </div>
+            </div>
+            <p class="text-sm text-muted">Keeps the hue and changes only the lightness of the text color (in OKLCH), in the direction that needs the smallest change.</p>
+            <div id="suggestion" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <section class="stack" style="--gap: var(--space-s)" aria-labelledby="tokens-title">
+          <div class="split">
+            <h2 class="text-lg" id="tokens-title">Arsenal tokens in the current theme</h2>
+            <span class="badge" id="theme-name"></span>
+          </div>
+          <p class="text-sm text-muted">Read live from <code>arsenal/css/tokens.css</code>. Change <code>--brand</code> or switch the theme with the button in the top bar and the table updates. Pick "Check" to load a pair above. The last three rows are not text (input borders, rating stars), so only the UI column applies to them.</p>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Foreground</th>
+                  <th scope="col">Background</th>
+                  <th scope="col" class="num">Ratio</th>
+                  <th scope="col">Text 4.5:1</th>
+                  <th scope="col">UI 3:1</th>
+                  <th scope="col" aria-label="Action"></th>
+                </tr>
+              </thead>
+              <tbody id="tokens"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Reads token colors; display: none still gets computed styles -->
+  <span id="probe" hidden></span>
+</body>
+</html>

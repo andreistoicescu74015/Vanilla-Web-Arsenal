@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Theme builder | Vanilla Web Arsenal</title>
+  <meta name="description" content="Pick brand colors, corners, font, spacing and shadows, preview real arsenal components, and copy the CSS.">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <link rel="stylesheet" href="../assets/docs.css">
+  <style>
+    @layer components {
+      .color-row {
+        display: flex;
+        gap: var(--space-xs);
+      }
+
+      .color-row input[type="color"] {
+        flex-shrink: 0;
+        inline-size: 3rem;
+        block-size: 2.75rem;
+        padding: 3px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-m);
+        background-color: var(--bg);
+        cursor: pointer;
+      }
+
+      /* .preset-dots comes from assets/docs.css */
+      .preset-button[aria-pressed="true"] {
+        --btn-border: var(--primary);
+        --btn-bg: color-mix(in oklab, var(--primary) 10%, transparent);
+      }
+
+      /* The preview. Tokens that are computed from --brand on :root must be computed
+         again here, or they would keep the page's brand color. */
+      .theme-preview {
+        --primary: var(--brand);
+        --primary-hover: color-mix(in oklab, var(--primary), black 15%);
+        --link: light-dark(var(--brand), color-mix(in oklab, var(--brand), white 45%));
+        --focus: light-dark(var(--brand), color-mix(in oklab, var(--brand), white 45%));
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-l);
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: var(--font-sans);
+        font-size: var(--text-base);
+        line-height: var(--leading-normal);
+        box-shadow: var(--shadow-m);
+      }
+
+      .warning-row {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-s);
+        padding-block: var(--space-xs);
+      }
+
+      .warning-row > .badge {
+        flex-shrink: 0;
+        min-inline-size: 4.25rem;
+        justify-content: center;
+        margin-block-start: 0.125rem;
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="theme.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container-wide container navbar-inner">
+      <a class="navbar-brand" href="../index.html"><i data-icon="layers" class="text-brand"></i> Vanilla Web Arsenal</a>
+      <nav class="navbar-links" id="site-nav" aria-label="Main">
+        <a href="../catalog/index.html">Catalog</a>
+        <a href="../index.html#templates">Templates</a>
+        <a href="../index.html#tools" aria-current="page">Tools</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container container-wide section" style="--section-space: var(--space-xl)">
+    <header class="stack mb-xl" style="--gap: var(--space-xs)">
+      <span class="eyebrow"><i data-icon="sparkles"></i> Tool</span>
+      <h1 class="text-3xl">Theme builder</h1>
+      <p class="lead">Give the arsenal your brand in a minute. Start from a preset, change what you like, and copy the code. Every change shows up on real components.</p>
+    </header>
+
+    <div class="with-sidebar tool-layout">
+      <form class="tool-panel" id="theme-form" aria-labelledby="settings-title" onsubmit="return false">
+        <h2 id="settings-title">Settings</h2>
+
+        <fieldset class="field">
+          <legend class="label">Presets</legend>
+          <div class="cluster" style="--gap: var(--space-xs)" id="presets"></div>
+        </fieldset>
+
+        <div class="field">
+          <label class="label" for="brand-text">Brand color</label>
+          <div class="color-row">
+            <input type="color" id="brand-picker" aria-label="Pick the brand color">
+            <input class="input font-mono" id="brand-text" spellcheck="false" autocomplete="off" aria-describedby="brand-hint">
+          </div>
+          <p class="field-hint" id="brand-hint">Buttons, links, focus rings, active states.</p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="accent-text">Accent color</label>
+          <div class="color-row">
+            <input type="color" id="accent-picker" aria-label="Pick the accent color">
+            <input class="input font-mono" id="accent-text" spellcheck="false" autocomplete="off" aria-describedby="accent-hint">
+          </div>
+          <p class="field-hint" id="accent-hint">Second color of the gradient and of chart highlights. Use it sparingly.</p>
+        </div>
+
+        <fieldset class="field">
+          <legend class="label">Corners</legend>
+          <div class="segmented self-start">
+            <label><input type="radio" name="radius" value="sharp"> Sharp</label>
+            <label><input type="radio" name="radius" value="default"> Default</label>
+            <label><input type="radio" name="radius" value="soft"> Soft</label>
+            <label><input type="radio" name="radius" value="round"> Round</label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label class="label" for="heading-font">Heading font</label>
+          <select class="input" id="heading-font" aria-describedby="heading-font-hint">
+            <option value="space">Space Grotesk (embedded)</option>
+            <option value="system">System sans-serif</option>
+            <option value="serif">Serif</option>
+            <option value="rounded">Rounded</option>
+            <option value="mono">Monospace</option>
+          </select>
+          <p class="field-hint" id="heading-font-hint">Space Grotesk is embedded in arsenal/css/fonts.css, so it works offline. The others are system fonts. Rounded shows on Apple devices; elsewhere it falls back to the system font.</p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="body-font">Body font</label>
+          <select class="input" id="body-font">
+            <option value="system">System sans-serif</option>
+            <option value="serif">Serif</option>
+            <option value="rounded">Rounded</option>
+            <option value="mono">Monospace</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="label" for="size">Body text size</label>
+          <select class="input" id="size">
+            <option value="15">15px</option>
+            <option value="16">16px (default)</option>
+            <option value="17">17px</option>
+            <option value="18">18px</option>
+          </select>
+        </div>
+
+        <fieldset class="field">
+          <legend class="label">Spacing</legend>
+          <div class="segmented self-start">
+            <label><input type="radio" name="density" value="compact"> Compact</label>
+            <label><input type="radio" name="density" value="default"> Default</label>
+            <label><input type="radio" name="density" value="comfortable"> Comfortable</label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label class="label" for="shadow">Shadow strength: <output id="shadow-label" for="shadow"></output></label>
+          <input id="shadow" type="range" min="0" max="2" step="0.25">
+        </div>
+
+        <button class="btn btn-ghost btn-sm" type="button" id="reset"><i data-icon="refresh"></i> Reset to default</button>
+      </form>
+
+      <div class="stack" style="--gap: var(--space-l)">
+        <section class="stack" style="--gap: var(--space-s)" aria-labelledby="preview-title">
+          <div class="split">
+            <h2 class="text-lg" id="preview-title">Preview</h2>
+            <fieldset class="segmented">
+              <legend class="visually-hidden">Preview theme</legend>
+              <label><input type="radio" name="scheme" value="light"> Light</label>
+              <label><input type="radio" name="scheme" value="dark"> Dark</label>
+            </fieldset>
+          </div>
+
+          <div class="theme-preview" id="preview">
+            <div class="split px-l py-s border-b">
+              <span class="flex items-center gap-xs font-bold" style="font-family: var(--font-heading)"><i data-icon="cloud" class="text-brand"></i> Nimbus</span>
+              <div class="cluster text-sm hide-mobile" style="--gap: var(--space-m)">
+                <a href="#preview">Features</a>
+                <a href="#preview">Pricing</a>
+                <a href="#preview">About</a>
+              </div>
+              <button class="btn btn-primary btn-sm" type="button">Sign up</button>
+            </div>
+
+            <div class="stack p-l" style="--gap: var(--space-l)">
+              <div class="stack" style="--gap: var(--space-s)">
+                <span class="eyebrow"><i data-icon="sparkles"></i> New release</span>
+                <h3 class="text-3xl">Plan projects <span class="gradient-text">with your team</span></h3>
+                <p class="text-muted max-w-prose">Tasks, deadlines and files on one board. This paragraph uses the body size and the muted text color.</p>
+                <div class="cluster">
+                  <button class="btn btn-primary" type="button">Primary</button>
+                  <button class="btn btn-outline" type="button">Outline</button>
+                  <button class="btn btn-gradient" type="button">Gradient</button>
+                  <button class="btn btn-ghost btn-icon" type="button" aria-label="Settings"><i data-icon="settings"></i></button>
+                </div>
+              </div>
+
+              <div class="auto-grid" style="--min: 13rem; --gap: var(--space-m)">
+                <article class="card">
+                  <div class="card-body">
+                    <span class="badge badge-primary">Design</span>
+                    <h4 class="text-lg">Pick a color palette</h4>
+                    <p class="text-sm text-muted">Due Friday. Two comments.</p>
+                  </div>
+                  <div class="card-footer">
+                    <span class="avatar" style="--size: 1.75rem">AP</span>
+                    <a class="text-sm push-right" href="#preview">Open task</a>
+                  </div>
+                </article>
+                <article class="card">
+                  <div class="card-body stat">
+                    <span class="stat-label">Tasks done</span>
+                    <span class="stat-value">128</span>
+                    <span class="stat-trend trend-up">+12% this week</span>
+                    <div class="progress" role="presentation" style="--value: 72%"><span></span></div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="alert alert-success" role="presentation">
+                <i data-icon="check-circle"></i>
+                <div><p class="alert-title">Theme saved</p><p class="text-sm">Alerts keep their status colors in every theme.</p></div>
+              </div>
+
+              <div class="cols-2" style="--gap: var(--space-m)">
+                <div class="field">
+                  <label class="label" for="preview-email">Email</label>
+                  <input class="input" id="preview-email" type="email" placeholder="you@example.com">
+                  <p class="field-hint">Click the field to see the focus ring.</p>
+                </div>
+                <div class="stack" style="--gap: var(--space-s)">
+                  <label class="switch"><input type="checkbox" role="switch" checked> Email me updates</label>
+                  <label class="check"><input type="checkbox" checked> Remember me</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="checks-title">
+          <div class="card-body" style="--gap: var(--space-xs)">
+            <h2 class="text-lg" id="checks-title">Contrast checks</h2>
+            <p class="text-sm text-muted">WCAG 2.2 AA needs 4.5:1 for normal text. Open the contrast checker for a suggested fix.</p>
+            <ul role="list" id="checks" aria-live="polite"></ul>
+          </div>
+        </section>
+
+        <section class="stack" style="--gap: var(--space-s)" aria-labelledby="output-title">
+          <div class="split">
+            <h2 class="text-lg" id="output-title">Code for your project</h2>
+            <button class="btn btn-primary btn-sm" type="button" data-copy="#theme-code"><i data-icon="copy"></i> Copy</button>
+          </div>
+          <pre class="m-0"><code id="theme-code"></code></pre>
+          <p class="text-sm text-muted">When your settings match a preset, the code starts with the <code>data-preset</code> attribute for <code>&lt;html&gt;</code>. The <code>:root</code> block lists only what still differs; paste it into css/style.css. Your own CSS sits outside the arsenal layers, so these values win without !important.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

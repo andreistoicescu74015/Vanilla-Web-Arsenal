@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flexbox playground | Vanilla Web Arsenal</title>
+  <meta name="description" content="Change every flexbox property and watch the items move. Copy the CSS and HTML when the layout is right.">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <link rel="stylesheet" href="../assets/docs.css">
+  <style>
+    @layer components {
+      .playground {
+        display: grid;
+        grid-template-columns: 22rem minmax(0, 1fr);
+        gap: var(--space-l);
+        padding-block: var(--space-l);
+      }
+
+      .playground .tool-panel {
+        position: sticky;
+        top: 5rem;
+        max-block-size: calc(100dvh - 6rem);
+        overflow-y: auto;
+      }
+
+      /* On narrow screens the preview comes first, so the result is visible without scrolling */
+      @media (width < 64rem) {
+        .playground { grid-template-columns: minmax(0, 1fr); }
+        .playground .tool-panel { order: 1; position: static; max-block-size: none; }
+      }
+
+      .panel-heading {
+        padding-block-start: var(--space-m);
+        border-block-start: 1px solid var(--border);
+      }
+
+      .stage {
+        padding: var(--space-l);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-l);
+        background-color: var(--surface);
+        overflow: auto;
+      }
+
+      /* The flex container under test. Its flexbox properties are set inline by flexbox.js. */
+      .flex-preview {
+        outline: 2px dashed color-mix(in oklab, var(--primary) 55%, transparent);
+        outline-offset: 4px;
+        border-radius: var(--radius-s);
+        background-color: var(--bg);
+      }
+
+      .flex-item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2xs);
+        padding: var(--space-xs) var(--space-s);
+        border: 2px solid var(--item-border);
+        border-radius: var(--radius-m);
+        background-color: var(--item-bg);
+        color: var(--text);
+        font-size: var(--text-sm);
+        text-align: start;
+        cursor: pointer;
+      }
+
+      .flex-item[aria-pressed="true"] {
+        box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--focus);
+      }
+
+      .flex-item-number {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        opacity: 0.75;
+      }
+
+      .axis-icon {
+        display: inline-flex;
+      }
+
+      .output-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+        gap: var(--space-m);
+      }
+
+      .tool-output h2 {
+        margin-block-end: var(--space-xs);
+        font-size: var(--text-base);
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="../assets/docs.js"></script>
+  <script defer src="flexbox.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container-wide container navbar-inner">
+      <a class="navbar-brand" href="../index.html"><i data-icon="layers" class="text-brand"></i> Vanilla Web Arsenal</a>
+      <nav class="navbar-links" id="site-nav" aria-label="Main">
+        <a href="../catalog/index.html">Catalog</a>
+        <a href="../index.html#templates">Templates</a>
+        <a href="../index.html#tools" aria-current="page">Tools</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container container-wide playground">
+    <aside class="tool-panel" aria-label="Flexbox controls" id="controls">
+      <div class="stack" style="--gap: var(--space-2xs)">
+        <h1 class="text-xl">Flexbox playground</h1>
+        <p class="text-sm text-muted">Change a property and watch the items move. It follows the <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">CSS-Tricks flexbox guide</a>; the <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki/Flexbox">Flexbox wiki page</a> explains every property.</p>
+      </div>
+
+      <h2 class="panel-heading">Container</h2>
+
+      <div class="field">
+        <label class="label" for="c-display">display</label>
+        <select class="input" id="c-display" data-container="display">
+          <option>flex</option>
+          <option>inline-flex</option>
+        </select>
+        <p class="field-hint">flex turns the box into a flex container. inline-flex does the same, but the box sits inline, like a word in a sentence.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="c-direction">flex-direction</label>
+        <select class="input" id="c-direction" data-container="direction">
+          <option>row</option>
+          <option>row-reverse</option>
+          <option>column</option>
+          <option>column-reverse</option>
+        </select>
+        <p class="field-hint">Sets the main axis, the direction items are placed in. The cross axis is always the other one.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="c-wrap">flex-wrap</label>
+        <select class="input" id="c-wrap" data-container="wrap">
+          <option>nowrap</option>
+          <option>wrap</option>
+          <option>wrap-reverse</option>
+        </select>
+        <p class="field-hint">nowrap squeezes everything onto one line. wrap lets items move to a new line when they run out of room.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="c-justify">justify-content</label>
+        <select class="input" id="c-justify" data-container="justify">
+          <option>flex-start</option>
+          <option>flex-end</option>
+          <option>center</option>
+          <option>space-between</option>
+          <option>space-around</option>
+          <option>space-evenly</option>
+        </select>
+        <p class="field-hint">Shares the free space along the main axis. Nothing moves when an item grows and leaves no free space.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="c-align-items">align-items</label>
+        <select class="input" id="c-align-items" data-container="alignItems">
+          <option>stretch</option>
+          <option>flex-start</option>
+          <option>flex-end</option>
+          <option>center</option>
+          <option>baseline</option>
+        </select>
+        <p class="field-hint">Lines items up on the cross axis, inside their line. stretch makes them fill the line, unless they have a fixed size.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="c-align-content">align-content</label>
+        <select class="input" id="c-align-content" data-container="alignContent">
+          <option>normal</option>
+          <option>flex-start</option>
+          <option>flex-end</option>
+          <option>center</option>
+          <option>space-between</option>
+          <option>space-around</option>
+          <option>space-evenly</option>
+          <option>stretch</option>
+        </select>
+        <p class="field-hint">Spreads the lines on the cross axis. It only does something when items wrap onto several lines and the container is taller than they are.</p>
+      </div>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="c-row-gap">row-gap (px)</label>
+          <input class="input" id="c-row-gap" type="number" min="0" max="96" step="4" data-container="rowGap">
+        </div>
+        <div class="field">
+          <label class="label" for="c-column-gap">column-gap (px)</label>
+          <input class="input" id="c-column-gap" type="number" min="0" max="96" step="4" data-container="columnGap">
+        </div>
+      </div>
+      <p class="field-hint">gap is the space between items. It never adds space at the outer edges.</p>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="c-width">Width: <output id="c-width-value" for="c-width"></output></label>
+          <input id="c-width" type="range" min="30" max="100" step="5" data-container="width">
+        </div>
+        <div class="field">
+          <label class="label" for="c-height">Height</label>
+          <select class="input" id="c-height" data-container="height">
+            <option>auto</option>
+            <option>160px</option>
+            <option>240px</option>
+            <option>360px</option>
+            <option>480px</option>
+          </select>
+        </div>
+      </div>
+      <p class="field-hint">Width and height are not flexbox properties. Change them to see how the items react to more or less space.</p>
+
+      <h2 class="panel-heading" id="item-heading">Item</h2>
+
+      <div class="cluster">
+        <button class="btn btn-sm" type="button" id="add-item"><i data-icon="plus"></i> Add item</button>
+        <button class="btn btn-sm btn-ghost" type="button" id="remove-item"><i data-icon="trash"></i> Remove selected</button>
+      </div>
+
+      <div class="field">
+        <label class="label" for="i-label">Text</label>
+        <input class="input" id="i-label" data-item="label" maxlength="24">
+      </div>
+
+      <div class="field">
+        <label class="label" for="i-text">Content length</label>
+        <select class="input" id="i-text" data-item="text">
+          <option value="short">Short</option>
+          <option value="medium">Medium</option>
+          <option value="long">Long</option>
+        </select>
+        <p class="field-hint">More content makes an item want more room, which changes how grow and shrink share the space.</p>
+      </div>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="i-grow">flex-grow</label>
+          <input class="input" id="i-grow" type="number" min="0" max="10" step="1" data-item="grow">
+        </div>
+        <div class="field">
+          <label class="label" for="i-shrink">flex-shrink</label>
+          <input class="input" id="i-shrink" type="number" min="0" max="10" step="1" data-item="shrink">
+        </div>
+      </div>
+      <p class="field-hint">grow: how much of the free space this item takes, compared with the others (0 takes none). shrink: how much it gives up when space is short (0 never shrinks).</p>
+
+      <div class="field">
+        <label class="label" for="i-basis">flex-basis</label>
+        <input class="input font-mono" id="i-basis" list="basis-options" data-item="basis" data-check="flex-basis">
+        <datalist id="basis-options">
+          <option value="auto"></option>
+          <option value="0"></option>
+          <option value="100px"></option>
+          <option value="200px"></option>
+          <option value="25%"></option>
+          <option value="50%"></option>
+          <option value="content"></option>
+        </datalist>
+        <p class="field-hint">The starting size before growing or shrinking. auto uses the width (or the content size when there is no width).</p>
+      </div>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="i-order">order</label>
+          <input class="input" id="i-order" type="number" min="-10" max="10" step="1" data-item="order">
+        </div>
+        <div class="field">
+          <label class="label" for="i-align-self">align-self</label>
+          <select class="input" id="i-align-self" data-item="alignSelf">
+            <option>auto</option>
+            <option>stretch</option>
+            <option>flex-start</option>
+            <option>flex-end</option>
+            <option>center</option>
+            <option>baseline</option>
+          </select>
+        </div>
+      </div>
+      <p class="field-hint">order changes only the visual order: screen readers and the Tab key still follow the HTML. align-self overrides align-items for this one item.</p>
+
+      <div class="field">
+        <label class="label" for="i-margin">Auto margin</label>
+        <select class="input font-mono" id="i-margin" data-item="margin">
+          <option value="">none</option>
+          <option>margin-left: auto</option>
+          <option>margin-right: auto</option>
+          <option>margin-top: auto</option>
+          <option>margin-bottom: auto</option>
+          <option>margin: auto</option>
+        </select>
+        <p class="field-hint">An auto margin takes all the free space on that side and pushes the item away. margin-left: auto sends a navbar's links to the right.</p>
+      </div>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="i-width">width</label>
+          <input class="input font-mono" id="i-width" placeholder="none" data-item="width" data-check="width">
+        </div>
+        <div class="field">
+          <label class="label" for="i-height">height</label>
+          <input class="input font-mono" id="i-height" placeholder="none" data-item="height" data-check="height">
+        </div>
+      </div>
+      <p class="field-hint">A fixed size, for example 120px or 30%. Leave empty to size by the content.</p>
+    </aside>
+
+    <section class="stack" style="--gap: var(--space-m)" aria-label="Preview and code">
+      <div class="cluster" role="group" aria-label="Presets">
+        <span class="text-sm font-semibold">Presets</span>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="navbar">Navbar</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="centered">Centered</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="equal">Equal columns</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="sidebar">Sidebar and content</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="footer">Footer at the bottom</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="cards">Wrapping cards</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="media">Media object</button>
+        <button class="btn btn-sm btn-ghost" type="button" data-preset="reset"><i data-icon="refresh"></i> Reset</button>
+      </div>
+
+      <div class="cluster text-sm" id="axes" aria-live="polite"></div>
+
+      <div class="stage">
+        <div class="flex-preview" id="preview"></div>
+      </div>
+      <p class="text-sm text-muted">Select an item to edit it. The number on each item is its place in the HTML, which order does not change.</p>
+
+      <div class="output-grid">
+        <div class="tool-output">
+          <h2>CSS</h2>
+          <pre><code id="css-output"></code></pre>
+          <button class="btn btn-sm" type="button" data-copy="#css-output"><i data-icon="copy"></i> Copy</button>
+        </div>
+        <div class="tool-output">
+          <h2>HTML</h2>
+          <pre><code id="html-output"></code></pre>
+          <button class="btn btn-sm" type="button" data-copy="#html-output"><i data-icon="copy"></i> Copy</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

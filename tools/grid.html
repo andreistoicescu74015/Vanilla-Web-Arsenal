@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grid playground | Vanilla Web Arsenal</title>
+  <meta name="description" content="Define columns, rows and areas, place items on numbered grid lines, and copy the CSS and HTML.">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <link rel="stylesheet" href="../assets/docs.css">
+  <style>
+    @layer components {
+      .playground {
+        display: grid;
+        grid-template-columns: 22rem minmax(0, 1fr);
+        gap: var(--space-l);
+        padding-block: var(--space-l);
+      }
+
+      .playground .tool-panel {
+        position: sticky;
+        top: 5rem;
+        max-block-size: calc(100dvh - 6rem);
+        overflow-y: auto;
+      }
+
+      /* On narrow screens the preview comes first, so the result is visible without scrolling */
+      @media (width < 64rem) {
+        .playground { grid-template-columns: minmax(0, 1fr); }
+        .playground .tool-panel { order: 1; position: static; max-block-size: none; }
+      }
+
+      .panel-heading {
+        padding-block-start: var(--space-m);
+        border-block-start: 1px solid var(--border);
+      }
+
+      .quick-picks {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2xs);
+      }
+
+      .quick-picks button {
+        padding: 0.125rem 0.5rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        background-color: var(--bg);
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+      }
+
+      .quick-picks button:hover {
+        border-color: var(--primary);
+        color: var(--link);
+      }
+
+      /* Extra room on the top and left for the line numbers */
+      .stage {
+        padding: var(--space-xl) var(--space-l) var(--space-l) var(--space-xl);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-l);
+        background-color: var(--surface);
+        overflow: auto;
+      }
+
+      .grid-preview {
+        position: relative;
+        border-radius: var(--radius-s);
+        background-color: var(--bg);
+        outline: 2px dashed color-mix(in oklab, var(--primary) 55%, transparent);
+        outline-offset: 4px;
+      }
+
+      /* A copy of the grid's tracks drawn behind the items: dashed cells plus line numbers */
+      .grid-overlay {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        pointer-events: none;
+      }
+
+      .grid-overlay > div {
+        position: relative;
+        border: 1px dashed color-mix(in oklab, var(--text-muted) 55%, transparent);
+        border-radius: 2px;
+      }
+
+      .line-number {
+        position: absolute;
+        color: var(--link);
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .line-number.col { inset-block-start: -1.1rem; }
+      .line-number.col.start { inset-inline-start: -0.2rem; }
+      .line-number.col.end { inset-inline-end: -0.2rem; }
+      .line-number.row { inset-inline-start: -1.1rem; }
+      .line-number.row.start { inset-block-start: -0.2rem; }
+      .line-number.row.end { inset-block-end: -0.2rem; }
+
+      .grid-item {
+        position: relative; /* stays above the overlay */
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2xs);
+        min-inline-size: 0;
+        min-block-size: 3rem;
+        padding: var(--space-xs) var(--space-s);
+        border: 2px solid var(--item-border);
+        border-radius: var(--radius-m);
+        background-color: var(--item-bg);
+        color: var(--text);
+        font-size: var(--text-sm);
+        text-align: start;
+        cursor: pointer;
+      }
+
+      .grid-item[aria-pressed="true"] {
+        box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--focus);
+        z-index: 1;
+      }
+
+      .grid-item-number {
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: 700;
+        opacity: 0.75;
+      }
+
+      .output-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+        gap: var(--space-m);
+      }
+
+      .tool-output h2 {
+        margin-block-end: var(--space-xs);
+        font-size: var(--text-base);
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="../assets/docs.js"></script>
+  <script defer src="grid.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container-wide container navbar-inner">
+      <a class="navbar-brand" href="../index.html"><i data-icon="layers" class="text-brand"></i> Vanilla Web Arsenal</a>
+      <nav class="navbar-links" id="site-nav" aria-label="Main">
+        <a href="../catalog/index.html">Catalog</a>
+        <a href="../index.html#templates">Templates</a>
+        <a href="../index.html#tools" aria-current="page">Tools</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container container-wide playground">
+    <aside class="tool-panel" aria-label="Grid controls" id="controls">
+      <div class="stack" style="--gap: var(--space-2xs)">
+        <h1 class="text-xl">Grid playground</h1>
+        <p class="text-sm text-muted">Define tracks, then place items on the numbered lines. It follows the <a href="https://css-tricks.com/snippets/css/complete-guide-grid/">CSS-Tricks grid guide</a>; the <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki/Grid">Grid wiki page</a> explains every property.</p>
+      </div>
+
+      <h2 class="panel-heading">Container</h2>
+
+      <div class="field">
+        <label class="label" for="g-columns">grid-template-columns</label>
+        <input class="input font-mono" id="g-columns" data-container="columns" data-check="grid-template-columns">
+        <div class="quick-picks" data-fill="#g-columns">
+          <button type="button">repeat(3, 1fr)</button>
+          <button type="button">repeat(auto-fit, minmax(10rem, 1fr))</button>
+          <button type="button">200px 1fr</button>
+          <button type="button">1fr 2fr 1fr</button>
+          <button type="button">auto 1fr auto</button>
+          <button type="button">repeat(12, 1fr)</button>
+        </div>
+        <p class="field-hint">One size per column. fr is a share of the free space, so 1fr 2fr makes the second column twice as wide.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="g-rows">grid-template-rows</label>
+        <input class="input font-mono" id="g-rows" placeholder="none" data-container="rows" data-check="grid-template-rows">
+        <div class="quick-picks" data-fill="#g-rows">
+          <button type="button">auto 1fr auto</button>
+          <button type="button">repeat(2, 100px)</button>
+          <button type="button">100px 1fr</button>
+        </div>
+        <p class="field-hint">Explicit rows. Leave it empty and the browser adds rows as items need them.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="g-auto-rows">grid-auto-rows</label>
+        <input class="input font-mono" id="g-auto-rows" placeholder="auto" data-container="autoRows" data-check="grid-auto-rows">
+        <div class="quick-picks" data-fill="#g-auto-rows">
+          <button type="button">100px</button>
+          <button type="button">minmax(4rem, auto)</button>
+        </div>
+        <p class="field-hint">The size of the rows the browser adds on its own (the implicit grid).</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="g-areas">grid-template-areas</label>
+        <textarea class="input font-mono text-sm" id="g-areas" rows="3" placeholder='"header header"&#10;"sidebar main"' data-container="areas" data-check="grid-template-areas"></textarea>
+        <p class="field-hint">Names regions of the grid. Each quoted line is one row with one name per column; an item joins a region with grid-area. A dot leaves a cell empty.</p>
+      </div>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="g-row-gap">row-gap (px)</label>
+          <input class="input" id="g-row-gap" type="number" min="0" max="96" step="4" data-container="rowGap">
+        </div>
+        <div class="field">
+          <label class="label" for="g-column-gap">column-gap (px)</label>
+          <input class="input" id="g-column-gap" type="number" min="0" max="96" step="4" data-container="columnGap">
+        </div>
+      </div>
+      <p class="field-hint">Space between tracks, never at the outer edges.</p>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="g-justify-items">justify-items</label>
+          <select class="input" id="g-justify-items" data-container="justifyItems">
+            <option>normal</option>
+            <option>start</option>
+            <option>end</option>
+            <option>center</option>
+            <option>stretch</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="g-align-items">align-items</label>
+          <select class="input" id="g-align-items" data-container="alignItems">
+            <option>normal</option>
+            <option>start</option>
+            <option>end</option>
+            <option>center</option>
+            <option>stretch</option>
+          </select>
+        </div>
+      </div>
+      <p class="field-hint">Position every item inside its cell: justify-items horizontally, align-items vertically. normal stretches items to fill the cell.</p>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="g-justify-content">justify-content</label>
+          <select class="input" id="g-justify-content" data-container="justifyContent">
+            <option>normal</option>
+            <option>start</option>
+            <option>end</option>
+            <option>center</option>
+            <option>space-between</option>
+            <option>space-around</option>
+            <option>space-evenly</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="g-align-content">align-content</label>
+          <select class="input" id="g-align-content" data-container="alignContent">
+            <option>normal</option>
+            <option>start</option>
+            <option>end</option>
+            <option>center</option>
+            <option>space-between</option>
+            <option>space-around</option>
+            <option>space-evenly</option>
+          </select>
+        </div>
+      </div>
+      <p class="field-hint">Move the whole grid inside the container. They only matter when the tracks are smaller than the container, for example with fixed px columns.</p>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="g-flow">grid-auto-flow</label>
+          <select class="input" id="g-flow" data-container="autoFlow">
+            <option>row</option>
+            <option>column</option>
+            <option>row dense</option>
+            <option>column dense</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="g-height">Height</label>
+          <select class="input" id="g-height" data-container="height">
+            <option>auto</option>
+            <option>240px</option>
+            <option>360px</option>
+            <option>480px</option>
+          </select>
+        </div>
+      </div>
+      <p class="field-hint">grid-auto-flow decides where items without a position go. dense fills earlier holes, which changes the visual order, so avoid it when the order matters. Height is not a grid property; it gives the rows room to show 1fr and align-content.</p>
+
+      <div class="field">
+        <label class="label" for="g-count">Number of items</label>
+        <input class="input" id="g-count" type="number" min="1" max="24" step="1">
+      </div>
+
+      <h2 class="panel-heading" id="item-heading">Item</h2>
+
+      <div class="field">
+        <label class="label" for="i-label">Text</label>
+        <input class="input" id="i-label" data-item="label" maxlength="24">
+      </div>
+
+      <div class="field">
+        <label class="label" for="i-column">grid-column</label>
+        <input class="input font-mono" id="i-column" placeholder="auto" data-item="column" data-check="grid-column">
+        <div class="quick-picks" data-fill="#i-column">
+          <button type="button">span 2</button>
+          <button type="button">1 / 3</button>
+          <button type="button">1 / -1</button>
+          <button type="button">2 / span 2</button>
+        </div>
+        <p class="field-hint">Which column lines the item runs between. 1 / 3 goes from line 1 to line 3, span 2 covers two tracks, 1 / -1 goes from the first line to the last.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="i-row">grid-row</label>
+        <input class="input font-mono" id="i-row" placeholder="auto" data-item="row" data-check="grid-row">
+        <div class="quick-picks" data-fill="#i-row">
+          <button type="button">span 2</button>
+          <button type="button">1 / 3</button>
+          <button type="button">2</button>
+        </div>
+        <p class="field-hint">The same idea for rows. The line numbers drawn on the preview help.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="i-area">grid-area</label>
+        <input class="input font-mono" id="i-area" placeholder="none" data-item="area" data-check="grid-area">
+        <p class="field-hint">Puts the item in a named region from grid-template-areas, for example header.</p>
+      </div>
+
+      <div class="cols-2" style="--gap: var(--space-s)">
+        <div class="field">
+          <label class="label" for="i-justify-self">justify-self</label>
+          <select class="input" id="i-justify-self" data-item="justifySelf">
+            <option>auto</option>
+            <option>start</option>
+            <option>end</option>
+            <option>center</option>
+            <option>stretch</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="i-align-self">align-self</label>
+          <select class="input" id="i-align-self" data-item="alignSelf">
+            <option>auto</option>
+            <option>start</option>
+            <option>end</option>
+            <option>center</option>
+            <option>stretch</option>
+          </select>
+        </div>
+      </div>
+      <p class="field-hint">Override justify-items and align-items for this one item.</p>
+    </aside>
+
+    <section class="stack" style="--gap: var(--space-m)" aria-label="Preview and code">
+      <div class="cluster" role="group" aria-label="Presets">
+        <span class="text-sm font-semibold">Presets</span>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="twelve">12 columns</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="holyGrail">Holy grail (areas)</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="gallery">Photo gallery</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="dashboard">Dashboard</button>
+        <button class="btn btn-sm btn-outline" type="button" data-preset="featured">Featured card</button>
+        <button class="btn btn-sm btn-ghost" type="button" data-preset="reset"><i data-icon="refresh"></i> Reset</button>
+      </div>
+
+      <div class="stage">
+        <div class="grid-preview" id="preview"></div>
+      </div>
+      <p class="text-sm text-muted">Select an item to edit it. The small numbers along the edges are grid lines: use them in grid-column and grid-row. The number on each item is its place in the HTML.</p>
+
+      <div class="output-grid">
+        <div class="tool-output">
+          <h2>CSS</h2>
+          <pre><code id="css-output"></code></pre>
+          <button class="btn btn-sm" type="button" data-copy="#css-output"><i data-icon="copy"></i> Copy</button>
+        </div>
+        <div class="tool-output">
+          <h2>HTML</h2>
+          <pre><code id="html-output"></code></pre>
+          <button class="btn btn-sm" type="button" data-copy="#html-output"><i data-icon="copy"></i> Copy</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

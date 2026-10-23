@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page builder | Vanilla Web Arsenal</title>
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <link rel="stylesheet" href="../assets/docs.css">
+  <style>
+    @layer components {
+      .builder {
+        display: grid;
+        grid-template-columns: 22rem minmax(0, 1fr);
+        gap: var(--space-l);
+        padding-block: var(--space-l);
+      }
+
+      @media (width < 64rem) {
+        .builder { grid-template-columns: minmax(0, 1fr); }
+      }
+
+      .builder .tool-panel {
+        position: sticky;
+        top: 5rem;
+        max-block-size: calc(100dvh - 6rem);
+        overflow-y: auto;
+      }
+
+      .section-picker label {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        font-size: var(--text-sm);
+      }
+
+      .order-list li {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2xs);
+        padding: var(--space-2xs) var(--space-2xs) var(--space-2xs) var(--space-s);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-m);
+        background-color: var(--bg);
+        font-size: var(--text-sm);
+      }
+
+      .order-list li > span {
+        flex: 1;
+        min-inline-size: 0;
+      }
+
+      .preview-frame {
+        display: block;
+        inline-size: var(--frame-width, 100%);
+        max-inline-size: 100%;
+        block-size: calc(100dvh - 9rem);
+        margin-inline: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-l);
+        background-color: var(--bg);
+        box-shadow: var(--shadow-m);
+        transition: inline-size var(--duration-slow) var(--ease-out);
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="sections.js"></script>
+  <script defer src="page-builder.js"></script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="container-wide container navbar-inner">
+      <a class="navbar-brand" href="../index.html"><i data-icon="layers" class="text-brand"></i> Vanilla Web Arsenal</a>
+      <nav class="navbar-links" id="site-nav" aria-label="Main">
+        <a href="../catalog/index.html">Catalog</a>
+        <a href="../index.html#templates">Templates</a>
+        <a href="../index.html#tools" aria-current="page">Tools</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container container-wide builder">
+    <aside class="tool-panel" aria-label="Page settings">
+      <div class="stack gap-2xs">
+        <h1 class="text-xl">Page builder</h1>
+        <p class="text-sm text-muted">Pick sections, order them, set your brand, then download a complete page.</p>
+      </div>
+
+      <div class="field">
+        <label class="label" for="preset">Start from</label>
+        <select class="input" id="preset">
+          <option value="">Choose a preset</option>
+          <option value="landing">Full landing page</option>
+          <option value="launch">Product launch</option>
+          <option value="minimal">Minimal (hero, features, footer)</option>
+          <option value="contact">About and contact</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="label" for="page-title">Page title</label>
+        <input class="input" id="page-title" value="Nimbus | Project boards for student teams">
+      </div>
+
+      <div class="field">
+        <label class="label" for="theme">Theme preset</label>
+        <select class="input" id="theme">
+          <option value="">Default (teal and violet)</option>
+          <option value="indigo">Indigo</option>
+          <option value="forest">Forest</option>
+          <option value="editorial">Editorial</option>
+          <option value="candy">Candy</option>
+        </select>
+        <p class="field-hint">Sets colors, corners and the heading font with one attribute on &lt;html&gt;.</p>
+      </div>
+
+      <div class="cols-2 gap-s">
+        <div class="field">
+          <label class="label" for="brand">Brand</label>
+          <input class="input" id="brand" type="color" value="#0f766e">
+        </div>
+        <div class="field">
+          <label class="label" for="accent">Accent</label>
+          <input class="input" id="accent" type="color" value="#7c3aed">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="prefix">Path to the arsenal folder</label>
+        <input class="input font-mono text-sm" id="prefix" value="../arsenal/">
+        <p class="field-hint">Relative to where you save the page. "../arsenal/" fits a folder next to arsenal/, like starter/.</p>
+      </div>
+
+      <div class="stack gap-xs">
+        <h2>Page order</h2>
+        <ol role="list" class="order-list stack gap-2xs" id="order"></ol>
+      </div>
+
+      <div class="stack section-picker gap-xs">
+        <h2>Sections</h2>
+        <div class="stack gap-xs" id="picker"></div>
+      </div>
+
+      <div class="cluster">
+        <button class="btn btn-primary" type="button" id="download"><i data-icon="download"></i> Download</button>
+        <button class="btn btn-outline" type="button" id="copy"><i data-icon="copy"></i> Copy HTML</button>
+      </div>
+    </aside>
+
+    <section class="stack gap-s" aria-label="Preview">
+      <div class="split">
+        <fieldset class="segmented" id="preview-width">
+          <legend class="visually-hidden">Preview width</legend>
+          <label><input type="radio" name="width" value="100%" checked> Desktop</label>
+          <label><input type="radio" name="width" value="820px"> Tablet</label>
+          <label><input type="radio" name="width" value="390px"> Phone</label>
+        </fieldset>
+        <span class="text-sm text-muted" id="summary"></span>
+      </div>
+      <iframe class="preview-frame" id="preview" title="Page preview"></iframe>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fluid size generator | Vanilla Web Arsenal</title>
+  <meta name="description" content="Generate clamp() values that grow with the screen, and a whole fluid type scale for the arsenal tokens.">
+  <script>document.documentElement.dataset.theme = localStorage.getItem("vwa-theme") || "";</script>
+  <link rel="stylesheet" href="../arsenal/css/arsenal.css">
+  <link rel="stylesheet" href="../assets/docs.css">
+  <style>
+    @layer components {
+      .range-field input[type="range"] {
+        inline-size: 100%;
+      }
+
+      .preview-text {
+        overflow-wrap: anywhere;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+      }
+
+      .scale-row {
+        display: grid;
+        grid-template-columns: 9rem minmax(0, 1fr);
+        align-items: baseline;
+        gap: var(--space-m);
+        padding-block: var(--space-s);
+        border-block-end: 1px solid var(--border);
+      }
+
+      .scale-row:last-child {
+        border-block-end: 0;
+      }
+
+      .scale-row p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1.2;
+      }
+
+      @media (width < 40rem) {
+        .scale-row {
+          grid-template-columns: minmax(0, 1fr);
+          gap: var(--space-2xs);
+        }
+      }
+    }
+  </style>
+  <script defer src="../arsenal/js/dom.js"></script>
+  <script defer src="../arsenal/js/utils.js"></script>
+  <script defer src="../arsenal/js/store.js"></script>
+  <script defer src="../arsenal/js/icons.js"></script>
+  <script defer src="../arsenal/js/ui.js"></script>
+  <script defer src="clamp.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="navbar">
+    <div class="container-wide container navbar-inner">
+      <a class="navbar-brand" href="../index.html"><i data-icon="layers" class="text-brand"></i> Vanilla Web Arsenal</a>
+      <nav class="navbar-links" id="site-nav" aria-label="Main">
+        <a href="../catalog/index.html">Catalog</a>
+        <a href="../index.html#templates">Templates</a>
+        <a href="../index.html#tools" aria-current="page">Tools</a>
+        <a href="https://github.com/andreistoicescu74015/Vanilla-Web-Arsenal/wiki">Wiki</a>
+      </nav>
+      <div class="navbar-actions">
+        <button class="btn btn-ghost btn-icon" type="button" data-theme-toggle></button>
+        <button class="btn btn-ghost btn-icon navbar-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><i data-icon="menu"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container container-wide section" style="--section-space: var(--space-xl)">
+    <header class="stack mb-xl" style="--gap: var(--space-xs)">
+      <span class="eyebrow"><i data-icon="smartphone"></i> Tool</span>
+      <h1 class="text-3xl">Fluid size generator</h1>
+      <p class="lead">A value that is small on phones, large on desktops, and grows smoothly in between, with no media queries. Works for font sizes, padding, gaps and widths.</p>
+    </header>
+
+    <!-- ============ One value ============ -->
+
+    <div class="with-sidebar tool-layout">
+      <form class="tool-panel" id="value-form" aria-labelledby="value-title" onsubmit="return false">
+        <h2 id="value-title">One fluid value</h2>
+
+        <fieldset class="field">
+          <legend class="label">Units for sizes</legend>
+          <div class="segmented self-start">
+            <label><input type="radio" name="unit" value="px"> px</label>
+            <label><input type="radio" name="unit" value="rem"> rem</label>
+          </div>
+        </fieldset>
+
+        <div class="cols-2" style="--gap: var(--space-s)">
+          <div class="field">
+            <label class="label" for="min-size">Smallest size</label>
+            <input class="input" id="min-size" type="number" step="any" min="0" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label class="label" for="max-size">Largest size</label>
+            <input class="input" id="max-size" type="number" step="any" min="0" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label class="label" for="min-vw">From width (px)</label>
+            <input class="input" id="min-vw" type="number" step="1" min="0" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label class="label" for="max-vw">To width (px)</label>
+            <input class="input" id="max-vw" type="number" step="1" min="0" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="root">Root font size (px)</label>
+          <input class="input" id="root" type="number" step="1" min="1" inputmode="numeric" aria-describedby="root-hint">
+          <p class="field-hint" id="root-hint">1rem equals this. Browsers use 16px unless the user changed it, and rem respects that change.</p>
+        </div>
+
+        <p class="field-error" id="value-error" role="alert"></p>
+      </form>
+
+      <div class="stack" style="--gap: var(--space-l)">
+        <section class="stack" style="--gap: var(--space-s)" aria-labelledby="output-title">
+          <div class="split">
+            <h2 class="text-lg" id="output-title">Your clamp()</h2>
+            <button class="btn btn-primary btn-sm" type="button" data-copy="#clamp-code"><i data-icon="copy"></i> Copy</button>
+          </div>
+          <pre class="m-0"><code id="clamp-code"></code></pre>
+          <p class="text-sm text-muted" id="clamp-explain"></p>
+        </section>
+
+        <section class="card" aria-labelledby="preview-title">
+          <div class="card-body">
+            <h2 class="text-lg" id="preview-title">Preview</h2>
+            <div class="field range-field">
+              <label class="label" for="sim">Simulated screen width: <output id="sim-label" for="sim"></output></label>
+              <input id="sim" type="range" min="280" max="1920" step="10">
+            </div>
+            <p class="text-muted" aria-live="polite"><span id="sim-result"></span></p>
+            <p class="preview-text" id="sim-preview">Plan projects with your team</p>
+            <hr>
+            <p class="text-sm text-muted">The same clamp() applied for real, in this browser window (<span id="window-width"></span> wide):</p>
+            <p class="preview-text" id="real-preview">Plan projects with your team</p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============ Type scale ============ -->
+
+    <hr class="mt-2xl mb-2xl">
+
+    <div class="with-sidebar tool-layout">
+      <form class="tool-panel" id="scale-form" aria-labelledby="scale-title" onsubmit="return false">
+        <h2 id="scale-title">Fluid type scale</h2>
+        <p class="text-sm text-muted">"Small" and "large" mean the two screen widths set above. Every step is the body size multiplied by the ratio. A bigger ratio on large screens makes headings grow faster than body text.</p>
+
+        <div class="cols-2" style="--gap: var(--space-s)">
+          <div class="field">
+            <label class="label" for="base-min">Body, small (px)</label>
+            <input class="input" id="base-min" type="number" step="any" min="1" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label class="label" for="base-max">Body, large (px)</label>
+            <input class="input" id="base-max" type="number" step="any" min="1" inputmode="decimal">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="ratio-min">Ratio on small screens</label>
+          <select class="input" id="ratio-min"></select>
+        </div>
+        <div class="field">
+          <label class="label" for="ratio-max">Ratio on large screens</label>
+          <select class="input" id="ratio-max"></select>
+        </div>
+        <p class="field-hint"><code>--text-xs</code> stays as it is in tokens.css. Paste the result into your own css/style.css; it overrides the arsenal tokens.</p>
+      </form>
+
+      <div class="stack" style="--gap: var(--space-l)">
+        <section class="stack" style="--gap: var(--space-s)" aria-labelledby="scale-output-title">
+          <div class="split">
+            <h2 class="text-lg" id="scale-output-title">CSS for css/style.css</h2>
+            <button class="btn btn-primary btn-sm" type="button" data-copy="#scale-code"><i data-icon="copy"></i> Copy</button>
+          </div>
+          <pre class="m-0"><code id="scale-code"></code></pre>
+        </section>
+
+        <section class="card" aria-labelledby="scale-preview-title">
+          <div class="card-body">
+            <div class="split">
+              <h2 class="text-lg" id="scale-preview-title">Scale preview</h2>
+              <span class="badge" id="scale-width"></span>
+            </div>
+            <div class="field range-field">
+              <label class="label" for="sim-scale">Simulated screen width</label>
+              <input id="sim-scale" type="range" min="280" max="1920" step="10">
+            </div>
+            <div id="scale-preview"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
